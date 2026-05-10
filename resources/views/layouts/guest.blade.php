@@ -15,38 +15,43 @@
 
 <body class="font-sans antialiased">
 
-    <div class="min-h-screen flex items-center justify-center px-4 relative overflow-hidden
-                bg-gradient-to-br from-[#1B3C53] via-[#234C6A] to-[#456882]">
+<div class="min-h-screen relative overflow-hidden
+            bg-gradient-to-br from-[#1B3C53] via-[#234C6A] to-[#456882]
+            flex items-center justify-center px-4 py-6 sm:px-6 lg:px-8">
 
-        <div class="absolute top-10 left-10 w-72 h-72 bg-white/10 rounded-full blur-3xl"></div>
-        <div class="absolute bottom-10 right-10 w-72 h-72 bg-[#D2C1B6]/20 rounded-full blur-3xl"></div>
+    <div class="absolute top-0 left-0 w-40 h-40 sm:w-72 sm:h-72 bg-white/10 rounded-full blur-3xl"></div>
+    <div class="absolute bottom-0 right-0 w-40 h-40 sm:w-72 sm:h-72 bg-[#D2C1B6]/20 rounded-full blur-3xl"></div>
 
-        <div class="w-full max-w-md relative z-10">
+    <div class="relative z-10 w-full max-w-md">
 
-            <div class="text-center mb-8">
-                <a href="/">
-                    <x-application-logo class="w-16 h-16 mx-auto fill-[#D2C1B6]" />
-                </a>
+        <div class="text-center mb-6 sm:mb-8">
 
-                <h1 class="text-3xl font-bold text-white mt-4 tracking-wide">
-                    Absolute Cinema
-                </h1>
+            <a href="/">
+                <x-application-logo
+                    class="w-12 h-12 sm:w-16 sm:h-16 mx-auto fill-[#D2C1B6]" />
+            </a>
 
-                <p class="text-gray-200 mt-2 text-sm">
-                    Premium movie experience
-                </p>
-            </div>
+            <h1 class="mt-3 text-2xl sm:text-3xl font-bold tracking-wide text-white">
+                Absolute Cinema
+            </h1>
 
-            <div class="bg-white/10 backdrop-blur-xl border border-white/20
-                        shadow-2xl rounded-3xl p-8">
+            <p class="mt-2 text-xs sm:text-sm text-gray-200">
+                Premium movie experience
+            </p>
 
-                {{ $slot }}
+        </div>
 
-            </div>
+        <div class="bg-white/10 backdrop-blur-xl border border-white/20
+                    shadow-2xl rounded-2xl sm:rounded-3xl
+                    px-5 py-6 sm:px-8 sm:py-8">
+
+            {{ $slot }}
 
         </div>
 
     </div>
+
+</div>
 
 </body>
 </html>
