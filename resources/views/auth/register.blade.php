@@ -83,12 +83,25 @@
             type="submit"
 
             class="w-full mt-6 bg-[#D2C1B6]
-                   text-[#1B3C53]
-                   font-bold py-3 rounded-xl">
+                text-[#1B3C53]
+                font-bold py-3 rounded-xl">
 
             Create Account
 
         </button>
+
+        <p class="text-center text-gray-200 text-sm mt-5">
+
+            Already have an account?
+
+            <a href="{{ route('login') }}"
+            class="text-[#D2C1B6] font-semibold hover:underline">
+
+                Login
+
+            </a>
+
+        </p>
 
     </form>
 
