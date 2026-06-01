@@ -1,7 +1,8 @@
 <?php
 
-use App\Http\Controllers\ProfileController;
 use Illuminate\Support\Facades\Route;
+
+use App\Http\Controllers\ProfileController;
 use App\Http\Controllers\MovieController;
 use App\Http\Controllers\ScheduleController;
 use App\Http\Controllers\SeatController;
@@ -15,7 +16,7 @@ Route::get('/', function () {
 
 Route::get('/dashboard', function () {
     return view('dashboard');
-})->middleware(['auth'])->name('dashboard');
+})->middleware(['auth', 'admin'])->name('dashboard');
 
 Route::middleware('auth')->group(function () {
     Route::get('/profile', [ProfileController::class, 'edit'])->name('profile.edit');

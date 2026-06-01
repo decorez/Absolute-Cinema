@@ -1,23 +1,54 @@
-<h1>Add Snack</h1>
+@extends('layouts.admin')
 
-<form action="{{ route('snacks.store') }}" method="POST">
+@section('title', 'Add Snack')
 
-    @csrf
+@section('content')
 
-    <input type="text" name="name" placeholder="Snack Name">
+<div class="max-w-2xl rounded-2xl bg-white p-8 shadow-sm">
 
-    <br><br>
+    <h3 class="mb-6 text-2xl font-bold text-[#1B3C53]">
+        Add New Snack
+    </h3>
 
-    <input type="number" name="price" placeholder="Price">
+    <form action="{{ route('snacks.store') }}" method="POST">
+        @csrf
 
-    <br><br>
+        <div class="mb-5">
+            <label class="mb-2 block font-medium text-[#1B3C53]">
+                Snack Name
+            </label>
 
-    <input type="number" name="stock" placeholder="Stock">
+            <input type="text"
+                name="name"
+                class="w-full rounded-xl border border-gray-300 p-3 focus:border-[#234C6A] focus:outline-none">
 
-    <br><br>
+        </div>
+        <div class="mb-5">
 
-    <button type="submit">
-        Save
-    </button>
+            <label class="mb-2 block font-medium text-[#1B3C53]">
+                Price
+            </label>
+            <input type="number"
+                name="price"
+                class="w-full rounded-xl border border-gray-300 p-3 focus:border-[#234C6A] focus:outline-none">
 
-</form>
+        </div>
+        <div class="mb-6">
+
+            <label class="mb-2 block font-medium text-[#1B3C53]">
+                Stock
+            </label>
+
+            <input type="number"
+                name="stock"
+                class="w-full rounded-xl border border-gray-300 p-3 focus:border-[#234C6A] focus:outline-none">
+
+        </div>
+        <button type="submit" class="rounded-xl bg-[#234C6A] px-6 py-3 text-white transition hover:bg-[#1B3C53]">
+            Save Snack
+
+        </button>
+    </form>
+
+</div>
+@endsection

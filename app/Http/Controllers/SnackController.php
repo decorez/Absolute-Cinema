@@ -31,11 +31,12 @@ class SnackController extends Controller
     {
         $validated = $request->validate([
             'name' => 'required',
-            'price' => 'required',
-            'stock' => 'required',
+            'price' => 'required|numeric|min:0',
+            'stock' => 'required|integer|min:0',
         ]);
+
         Snack::create($validated);
-        return redirect()->route('snacks.index');
+        return redirect()->route('snacks.index')->with('success', 'Snack added successfully.');
     }
 
     /**
@@ -61,11 +62,11 @@ class SnackController extends Controller
     {
         $validated = $request->validate([
             'name' => 'required',
-            'price' => 'required',
-            'stock' => 'required',
+            'price' => 'required|numeric|min:0',
+            'stock' => 'required|integer|min:0',
         ]);
         $snack->update($validated);
-        return redirect()->route('snacks.index');
+        return redirect()->route('snacks.index')->with('success', 'Snack updated successfully.');
     }
 
     /**
@@ -74,6 +75,6 @@ class SnackController extends Controller
     public function destroy(Snack $snack)
     {
         $snack->delete();
-        return redirect()->route('snacks.index');
+        return redirect()->route('snacks.index')->with('success', 'Snack deleted successfully.');
     }
 }

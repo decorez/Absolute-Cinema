@@ -18,6 +18,7 @@ return new class extends Migration
             $table->string('genre');
             $table->integer('duration');
             $table->date('release_date');
+            $table->string('poster')->nullable();
             $table->timestamps();
         });
     }

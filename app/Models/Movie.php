@@ -12,6 +12,7 @@ class Movie extends Model
     'genre',
     'duration',
     'release_date',
+    'poster',
     ];
     public function schedules()
     {

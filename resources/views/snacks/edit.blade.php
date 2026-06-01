@@ -1,36 +1,52 @@
-<h1>Edit Snack</h1>
+@extends('layouts.admin')
 
-<form action="{{ route('snacks.update', $snack->id) }}" method="POST">
+@section('title', 'Edit Snack')
 
-    @csrf
-    @method('PUT')
+@section('content')
 
-    <input
-        type="text"
-        name="name"
-        value="{{ $snack->name }}"
-    >
+<div class="max-w-2xl rounded-2xl bg-white p-8 shadow-sm">
 
-    <br><br>
+    <h3 class="mb-6 text-2xl font-bold text-[#1B3C53]">
+        Edit Snack
+    </h3>
 
-    <input
-        type="number"
-        name="price"
-        value="{{ $snack->price }}"
-    >
+    <form action="{{ route('snacks.update', $snack->id) }}" method="POST">
 
-    <br><br>
+        @csrf
+        @method('PUT')
 
-    <input
-        type="number"
-        name="stock"
-        value="{{ $snack->stock }}"
-    >
+        <div class="mb-5">
 
-    <br><br>
+            <label class="mb-2 block font-medium text-[#1B3C53]">
+                Snack Name
+            </label>
+            <input type="text" name="name" value="{{ $snack->name }}" class="w-full rounded-xl border border-gray-300 p-3">
+        </div>
 
-    <button type="submit">
-        Update
-    </button>
+        <div class="mb-5">
 
-</form>
+            <label class="mb-2 block font-medium text-[#1B3C53]">
+                Price
+            </label>
+
+            <input type="number" name="price" value="{{ $snack->price }}" class="w-full rounded-xl border border-gray-300 p-3">
+
+        </div>
+
+        <div class="mb-6">
+
+            <label class="mb-2 block font-medium text-[#1B3C53]">
+                Stock
+            </label>
+
+            <input type="number" name="stock" value="{{ $snack->stock }}" class="w-full rounded-xl border border-gray-300 p-3">
+        </div>
+
+        <button type="submit" class="rounded-xl bg-[#456882] px-6 py-3 text-white transition hover:opacity-90">
+
+            Update Snack
+
+        </button>
+    </form>
+</div>
+@endsection
