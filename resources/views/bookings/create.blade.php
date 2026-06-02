@@ -1,47 +1,55 @@
-<h1>Create Booking</h1>
+@extends('layouts.admin')
 
-<form action="{{ route('bookings.store') }}" method="POST">
+@section('title', 'Select Seats')
 
+@section('content')
+
+<h2 class="text-3xl font-bold text-[#1B3C53] mb-2">
+    {{ $schedule->movie->title }}
+</h2>
+
+<p class="text-gray-500 mb-6">
+    {{ $schedule->show_date }} | {{ $schedule->show_time }}
+</p>
+
+<form action="{{ route('booking.store', $schedule->id) }}" method="POST">
     @csrf
 
-    <label>Schedule</label>
+    <div class="bg-white p-6 rounded-2xl shadow-sm">
 
-    <select name="schedule_id">
+        <div class="text-center mb-6 text-gray-500">
+            SCREEN
+        </div>
 
-        @foreach($schedules as $schedule)
+        <div class="grid grid-cols-10 gap-3 mb-6">
 
-            <option value="{{ $schedule->id }}">
-                {{ $schedule->movie->title }}
-                -
-                {{ $schedule->show_date }}
-                -
-                {{ $schedule->show_time }}
-            </option>
+            @foreach($schedule->seats as $seat)
 
-        @endforeach
+            <label>
 
-    </select>
+                <input type="checkbox" name="seats[]" value="{{ $seat->id }}" class="hidden peer" {{ $seat->is_booked ? 'disabled' : '' }}>
 
-    <br><br>
+                <div class="w-10 h-10 flex items-center justify-center rounded text-white cursor-pointer
+                        {{ $seat->is_booked ? 'bg-red-500 cursor-not-allowed' : 'bg-green-500 peer-checked:bg-yellow-400' }}">
 
-    <label>Seat</label>
+                    {{ $seat->seat_number }}
 
-    <select name="seat_id">
+                </div>
 
-        @foreach($seats as $seat)
+            </label>
 
-            <option value="{{ $seat->id }}">
-                {{ $seat->seat_number }}
-            </option>
+            @endforeach
 
-        @endforeach
+        </div>
 
-    </select>
+        <button type="submit" class="w-full py-3 bg-[#234C6A] text-white rounded-xl hover:bg-[#1B3C53]">
 
-    <br><br>
+            Book Selected Seats
 
-    <button type="submit">
-        Book
-    </button>
+        </button>
+
+    </div>
 
 </form>
+
+@endsection

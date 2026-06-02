@@ -57,6 +57,11 @@
                     class="block rounded-xl px-4 py-3 transition hover:bg-[#234C6A]">
                     Bookings
                 </a>
+
+                <a href="/studios"
+                    class="block rounded-xl px-4 py-3 transition hover:bg-[#234C6A]">
+                    Studios
+                </a>
             </nav>
         </aside>
 

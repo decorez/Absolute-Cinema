@@ -3,12 +3,15 @@
 namespace App\Models;
 
 use Illuminate\Database\Eloquent\Model;
+use App\Models\User;
+use App\Models\Schedule;
+use App\Models\BookingDetail;
 
 class Booking extends Model
 {
     protected $fillable = [
-    'user_id',
-    'schedule_id',
+        'user_id',
+        'schedule_id',
     ];
 
     public function user()

@@ -1,18 +1,18 @@
 @extends('layouts.admin')
 
-@section('title', 'Snacks')
+@section('title', 'Studios')
 
 @section('content')
 
 <div class="flex items-center justify-between mb-6">
 
     <h2 class="text-3xl font-bold text-[#1B3C53]">
-        Snack List
+        Studio List
     </h2>
 
-    <a href="{{ route('snacks.create') }}"
+    <a href="{{ route('studios.create') }}"
        class="rounded-xl bg-[#234C6A] px-5 py-3 text-white transition hover:bg-[#1B3C53]">
-        Add Snack
+        Add Studio
     </a>
 
 </div>
@@ -26,15 +26,11 @@
             <tr>
 
                 <th class="px-6 py-4 text-left font-semibold text-gray-600">
-                    Name
+                    Studio
                 </th>
 
                 <th class="px-6 py-4 text-left font-semibold text-gray-600">
-                    Price
-                </th>
-
-                <th class="px-6 py-4 text-left font-semibold text-gray-600">
-                    Stock
+                    Capacity
                 </th>
 
                 <th class="px-6 py-4 text-center font-semibold text-gray-600">
@@ -47,32 +43,28 @@
 
         <tbody>
 
-            @forelse($snacks as $snack)
+            @forelse($studios as $studio)
 
             <tr class="border-b hover:bg-gray-50">
 
                 <td class="px-6 py-4 font-medium text-gray-800">
-                    {{ $snack->name }}
+                    {{ $studio->name }}
                 </td>
 
                 <td class="px-6 py-4 text-gray-600">
-                    Rp {{ number_format($snack->price, 0, ',', '.') }}
-                </td>
-
-                <td class="px-6 py-4 text-gray-600">
-                    {{ $snack->stock }}
+                    {{ $studio->capacity }} Seats
                 </td>
 
                 <td class="px-6 py-4">
 
                     <div class="flex justify-center gap-3">
 
-                        <a href="{{ route('snacks.edit', $snack->id) }}"
+                        <a href="{{ route('studios.edit', $studio->id) }}"
                            class="rounded-lg bg-yellow-400 px-4 py-2 text-sm font-medium text-white hover:bg-yellow-500">
                             Edit
                         </a>
 
-                        <form action="{{ route('snacks.destroy', $snack->id) }}" method="POST" class="delete-form">
+                        <form action="{{ route('studios.destroy', $studio->id) }}" method="POST" class="delete-form">
 
                             @csrf
                             @method('DELETE')
@@ -93,8 +85,8 @@
             @empty
 
             <tr>
-                <td colspan="4" class="py-10 text-center text-gray-500">
-                    No snacks found.
+                <td colspan="3" class="py-10 text-center text-gray-500">
+                    No studios found.
                 </td>
             </tr>
 
@@ -117,8 +109,8 @@ document.querySelectorAll('.delete-form').forEach(form => {
         e.preventDefault();
 
         Swal.fire({
-            title: 'Delete Snack?',
-            text: 'This snack will be permanently removed.',
+            title: 'Delete Studio?',
+            text: 'This studio will be permanently removed.',
             icon: 'warning',
             showCancelButton: true,
             confirmButtonColor: '#d33',

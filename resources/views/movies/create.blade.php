@@ -1,34 +1,79 @@
-<h1>Add Movie</h1>
+@extends('layouts.admin')
 
-<form method="POST" action="{{ route('movies.store') }}">
+@section('title', 'Add Movie')
 
-    @csrf
+@section('content')
 
-    <input type="text" name="title" placeholder="Title">
+<div class="max-w-4xl mx-auto bg-white rounded-2xl shadow-sm p-8">
 
-    <br><br>
+    <h2 class="text-3xl font-bold text-[#1B3C53] mb-6">
+        Add Movie
+    </h2>
 
-    <textarea
-        name="description"
-        placeholder="Description"
-    ></textarea>
+    <form action="{{ route('movies.store') }}" method="POST" enctype="multipart/form-data">
 
-    <br><br>
+        @csrf
 
-    <input type="text" name="genre" placeholder="Genre">
+        <div class="mb-5">
+            <label class="block mb-2 font-medium text-[#1B3C53]">
+                Title
+            </label>
 
-    <br><br>
+            <input type="text" name="title" class="w-full rounded-xl border border-gray-300 p-3">
+        </div>
 
-    <input type="number" name="duration" placeholder="Duration">
+        <div class="mb-5">
+            <label class="block mb-2 font-medium text-[#1B3C53]">
+                Genre
+            </label>
 
-    <br><br>
+            <input type="text" name="genre" class="w-full rounded-xl border border-gray-300 p-3">
+        </div>
 
-    <input type="date" name="release_date">
+        <div class="mb-5">
+            <label class="block mb-2 font-medium text-[#1B3C53]">
+                Duration (Minutes)
+            </label>
 
-    <br><br>
+            <input type="number" name="duration" class="w-full rounded-xl border border-gray-300 p-3">
+        </div>
 
-    <button type="submit">
-        Save
-    </button>
+        <div class="mb-5">
+            <label class="block mb-2 font-medium text-[#1B3C53]">
+                Release Date
+            </label>
 
-</form>
+            <input type="date" name="release_date" class="w-full rounded-xl border border-gray-300 p-3">
+        </div>
+
+        <div class="mb-5">
+            <label class="block mb-2 font-medium text-[#1B3C53]">
+                Poster
+            </label>
+
+            <input type="file"
+                   name="poster"
+                   accept=".jpg,.jpeg,.png"
+                   class="w-full rounded-xl border border-gray-300 p-3">
+        </div>
+
+        <div class="mb-6">
+            <label class="block mb-2 font-medium text-[#1B3C53]">
+                Description
+            </label>
+
+            <textarea name="description"
+                      rows="5"
+                      class="w-full rounded-xl border border-gray-300 p-3"></textarea>
+        </div>
+
+        <button type="submit"
+                class="rounded-xl bg-[#234C6A] px-6 py-3 text-white hover:bg-[#1B3C53] transition">
+            Save Movie
+        </button>
+
+    </form>
+
+</div>
+
+@endsection

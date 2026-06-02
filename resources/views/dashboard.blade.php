@@ -12,7 +12,7 @@
         </h3>
 
         <p class="text-4xl font-bold mt-2">
-            0
+            {{ $totalMovies }}
         </p>
     </div>
 
@@ -22,7 +22,7 @@
         </h3>
 
         <p class="text-4xl font-bold mt-2">
-            0
+            {{ $totalSchedules }}
         </p>
     </div>
 
@@ -32,7 +32,7 @@
         </h3>
 
         <p class="text-4xl font-bold mt-2">
-            0
+            {{ $totalSnacks }}
         </p>
     </div>
 
@@ -42,7 +42,7 @@
         </h3>
 
         <p class="text-4xl font-bold mt-2">
-            0
+            {{ $totalBookings }}
         </p>
     </div>
 

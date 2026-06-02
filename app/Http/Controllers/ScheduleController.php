@@ -3,6 +3,7 @@
 namespace App\Http\Controllers;
 
 use App\Models\Schedule;
+use App\Models\Studio;
 use App\Models\Movie;
 use Illuminate\Http\Request;
 
@@ -13,7 +14,7 @@ class ScheduleController extends Controller
      */
     public function index()
     {
-        $schedules = Schedule::with('movie')->get();
+        $schedules = Schedule::with(['movie', 'studio'])->get();
 
         return view('schedules.index', compact('schedules'));
     }
@@ -24,8 +25,9 @@ class ScheduleController extends Controller
     public function create()
     {
         $movies = Movie::all();
+        $studios = Studio::all();
 
-        return view('schedules.create', compact('movies'));
+        return view('schedules.create', compact('movies', 'studios'));
     }
 
     /**
@@ -33,16 +35,17 @@ class ScheduleController extends Controller
      */
     public function store(Request $request)
     {
-        $validated = $request->validate([
+        $input = $request->validate([
             'movie_id' => 'required',
+            'studio_id' => 'required',
             'show_date' => 'required',
             'show_time' => 'required',
             'price' => 'required',
         ]);
 
-        Schedule::create($validated);
+        Schedule::create($input);
 
-        return redirect()->route('schedules.index');
+        return redirect()->route('schedules.index')->with('success', 'Schedule added successfully.');
     }
 
     /**
@@ -59,25 +62,27 @@ class ScheduleController extends Controller
     public function edit(Schedule $schedule)
     {
         $movies = Movie::all();
+        $studios = Studio::all();
 
-        return view('schedules.edit', compact('schedule', 'movies'));
-    }
+        return view('schedules.edit', compact('schedule', 'movies', 'studios'));
+    }   
 
     /**
      * Update the specified resource in storage.
      */
     public function update(Request $request, Schedule $schedule)
     {
-        $validated = $request->validate([
+        $input = $request->validate([
             'movie_id' => 'required',
+            'studio_id' => 'required',
             'show_date' => 'required',
             'show_time' => 'required',
             'price' => 'required',
         ]);
 
-        $schedule->update($validated);
+        $schedule->update($input);
 
-        return redirect()->route('schedules.index');
+        return redirect()->route('schedules.index')->with('success', 'Schedule updated successfully.');
     }
 
     /**
@@ -87,6 +92,6 @@ class ScheduleController extends Controller
     {
         $schedule->delete();
 
-        return redirect()->route('schedules.index');
+        return redirect()->route('schedules.index')->with('success', 'Schedule deleted successfully.');
     }
 }

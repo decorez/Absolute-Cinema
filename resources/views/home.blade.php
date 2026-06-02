@@ -20,9 +20,27 @@
             <a href="#" class="transition hover:text-[#D2C1B6]">
                 Promo
             </a>
-            <a href="/login" class="rounded-xl bg-[#D2C1B6] px-5 py-2 text-[#1B3C53] transition hover:scale-105">
+
+
+            @auth
+            <div class="flex items-center gap-4">
+                <form method="POST" action="{{ route('logout') }}" class="m-0">
+                    @csrf
+                    <button type="submit"
+                        class="rounded-xl bg-[#D2C1B6] px-5 py-2 text-[#1B3C53] transition hover:scale-105">
+                        Logout
+                    </button>
+
+                </form>
+            </div>
+            @else
+            <a href="{{ route('login') }}"
+                class="rounded-xl bg-[#D2C1B6] px-5 py-2 text-[#1B3C53] transition hover:scale-105">
                 Login
             </a>
+
+            @endauth
+
         </div>
     </nav>
 
@@ -63,22 +81,43 @@
         </div>
 
         <div class="grid grid-cols-4 gap-8">
-            @for ($i = 0; $i < 8; $i++)
-                <div class="overflow-hidden rounded-3xl bg-[#234C6A]/80 backdrop-blur-md transition hover:-translate-y-2 hover:shadow-2xl">
-                    <div class="h-[420px] bg-gradient-to-b from-[#456882] to-[#234C6A]"></div>
-                    <div class="p-6">
-                        <h3 class="text-2xl font-semibold">
-                            Movie Title
-                        </h3>
-                        <p class="mt-2 text-[#D2C1B6]">
-                            Action • 120 min
-                        </p>
-                        <button class="mt-6 w-full rounded-xl bg-[#D2C1B6] py-3 font-semibold text-[#1B3C53] transition hover:scale-[1.02]">
-                            Buy Ticket
-                        </button>
-                    </div>
+            @forelse($movies as $movie)
+            <div class="overflow-hidden rounded-3xl bg-[#234C6A]/80 backdrop-blur-md transition hover:-translate-y-2 hover:shadow-2xl">
+                @if($movie->poster)
+
+                <img src="{{ asset('storage/' . $movie->poster) }}" alt="{{ $movie->title }}" class="h-[420px] w-full object-cover">
+
+                @else
+                <div class="h-[420px] bg-gradient-to-b from-[#456882] to-[#234C6A]"></div>
+                @endif
+
+                <div class="p-6">
+
+                    <h3 class="h-24 text-2xl font-semibold">
+                        {{ $movie->title }}
+                    </h3>
+
+                    <p class="mt-2 text-[#D2C1B6]">
+                        {{ $movie->genre }} • {{ $movie->duration }} min
+                    </p>
+
+                    <button class="mt-6 w-full rounded-xl bg-[#D2C1B6] py-3 font-semibold text-[#1B3C53] transition hover:scale-[1.02]">
+                        Buy Ticket
+                    </button>
                 </div>
-            @endfor
+            </div>
+
+            @empty
+
+            <div class="col-span-4">
+                <div class="rounded-3xl bg-white/5 p-10 text-center">
+
+                    <h3 class="text-2xl font-semibold">
+                        No Movies Available
+                    </h3>
+                </div>
+            </div>
+            @endforelse
         </div>
     </section>
 
@@ -159,7 +198,7 @@
         </div>
     </section>
 
-   <!-- Absolute Snack -->
+    <!-- Absolute Snack -->
     <section class="container mx-auto pb-24 ">
 
         <div class="mb-10">
