@@ -1,246 +1,179 @@
 @extends('layouts.app')
 
 @section('content')
-
 <div class="min-h-screen text-white bg-gradient-to-br from-[#1B3C53] via-[#234C6A] to-[#456882]">
 
-    <!-- Navigation Bar -->
     <nav class="sticky top-0 z-50 mx-auto flex items-center justify-between px-10 py-5 backdrop-blur-md bg-[#1B3C53]/60 border-b border-white/10">
-        <h1 class="text-3xl font-bold" style="font-family:'Noto Sans', sans-serif;">
+        <a href="{{ url('/') }}" class="text-3xl font-bold tracking-tight">
             Absolute Cinema
-        </h1>
+        </a>
 
         <div class="flex items-center gap-8">
-            <a href="#" class="transition hover:text-[#D2C1B6]">
-                Movies
-            </a>
-            <a href="#" class="transition hover:text-[#D2C1B6]">
-                Tickets
-            </a>
-            <a href="#" class="transition hover:text-[#D2C1B6]">
-                Promo
-            </a>
-
+            <a href="#" class="transition hover:text-[#D2C1B6] text-sm font-medium">Movies</a>
+            
+            @auth
+                @if(auth()->user()->role === 'admin')
+                    <a href="{{ route('admin.bookings') }}" class="transition hover:text-[#D2C1B6] text-sm font-medium">Manage Bookings</a>
+                @else
+                    <a href="{{ route('bookings.index') }}" class="transition hover:text-[#D2C1B6] text-sm font-medium">My Tickets</a>
+                @endif
+            @endauth
+            
+            <a href="#" class="transition hover:text-[#D2C1B6] text-sm font-medium">Promo</a>
 
             @auth
-            <div class="flex items-center gap-4">
                 <form method="POST" action="{{ route('logout') }}" class="m-0">
                     @csrf
-                    <button type="submit"
-                        class="rounded-xl bg-[#D2C1B6] px-5 py-2 text-[#1B3C53] transition hover:scale-105">
+                    <button type="submit" class="rounded-xl bg-[#D2C1B6] px-5 py-2 text-xs font-bold text-[#1B3C53] transition hover:scale-105">
                         Logout
                     </button>
-
                 </form>
-            </div>
             @else
-            <a href="{{ route('login') }}"
-                class="rounded-xl bg-[#D2C1B6] px-5 py-2 text-[#1B3C53] transition hover:scale-105">
-                Login
-            </a>
-
+                <a href="{{ route('login') }}" class="rounded-xl bg-[#D2C1B6] px-5 py-2 text-xs font-bold text-[#1B3C53] transition hover:scale-105">
+                    Login
+                </a>
             @endauth
-
         </div>
     </nav>
 
-    <!-- Hero Section -->
-    <section class="container mx-auto pt-16 pb-24">
-        <div class="rounded-[36px] overflow-hidden bg-white/5 p-16 backdrop-blur-sm">
-
-            <span class="rounded-full bg-[#D2C1B6] px-5 py-2 font-medium text-[#1B3C53]">
+    <section class="max-w-6xl mx-auto pt-16 pb-20 px-6">
+        <div class="rounded-[36px] overflow-hidden bg-white/5 p-12 border border-white/10 backdrop-blur-sm">
+            <span class="inline-block rounded-full bg-[#D2C1B6] px-4 py-1.5 text-xs font-bold text-[#1B3C53]">
                 NOW SHOWING
             </span>
 
-            <h1 class="mt-8 text-7xl font-black leading-tight">
-                Experience <br>
-                Cinema <br>
+            <h1 class="mt-6 text-5xl font-black leading-tight tracking-tight">
+                Experience Cinema <br>
                 Like Never Before
             </h1>
 
-            <p class="mt-8 max-w-xl text-xl text-[#D2C1B6]">
-                Reserve your seat and enjoy premium cinematic moments.
+            <p class="mt-4 max-w-md text-base text-[#D2C1B6] leading-relaxed">
+                Reserve your seat and enjoy premium cinematic moments with friends and family.
             </p>
 
-            <button class="mt-10 rounded-xl bg-[#D2C1B6] px-10 py-4 font-semibold text-[#1B3C53] transition hover:scale-105">
-                Book Ticket
-            </button>
+            <a href="#movies-list" class="inline-block mt-8 rounded-xl bg-[#D2C1B6] px-8 py-3.5 text-sm font-bold text-[#1B3C53] transition hover:scale-105">
+                Book Tickets Now
+            </a>
         </div>
     </section>
 
-    <!-- Now Showing Section-->
-    <section class="container mx-auto pb-24">
-        <div class="mb-10 flex items-center justify-between">
-            <h2 class="text-4xl font-bold">
-                Now Showing
-            </h2>
-
-            <button class="text-[#D2C1B6] hover:opacity-80">
-                See All →
-            </button>
+    <section id="movies-list" class="max-w-6xl mx-auto pb-20 px-6">
+        <div class="mb-8 flex items-center justify-between">
+            <h2 class="text-2xl font-bold tracking-tight">Now Showing</h2>
+            <button class="text-sm font-medium text-[#D2C1B6] hover:opacity-80">See All →</button>
         </div>
 
-        <div class="grid grid-cols-4 gap-8">
+        <div class="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-4 gap-6">
             @forelse($movies as $movie)
-            <div class="overflow-hidden rounded-3xl bg-[#234C6A]/80 backdrop-blur-md transition hover:-translate-y-2 hover:shadow-2xl">
-                @if($movie->poster)
+                <div class="overflow-hidden rounded-2xl bg-[#234C6A]/80 border border-white/5 shadow-md flex flex-col justify-between">
+                    <div>
+                        @if($movie->poster)
+                            <img src="{{ asset('storage/' . $movie->poster) }}" alt="{{ $movie->title }}" class="h-[380px] w-full object-cover">
+                        @else
+                            <div class="h-[380px] bg-gradient-to-b from-[#456882] to-[#234C6A] flex items-center justify-center text-xs text-[#D2C1B6]">
+                                No Poster Available
+                            </div>
+                        @endif
 
-                <img src="{{ asset('storage/' . $movie->poster) }}" alt="{{ $movie->title }}" class="h-[420px] w-full object-cover">
+                        <div class="p-5">
+                            <h3 class="text-lg font-bold line-clamp-2 text-white">
+                                {{ $movie->title }}
+                            </h3>
+                            <p class="mt-1 text-xs text-[#D2C1B6]">
+                                {{ $movie->genre ?? 'Genre' }} • {{ $movie->duration ?? '0' }} Min
+                            </p>
+                        </div>
+                    </div>
 
-                @else
-                <div class="h-[420px] bg-gradient-to-b from-[#456882] to-[#234C6A]"></div>
-                @endif
-
-                <div class="p-6">
-
-                    <h3 class="h-24 text-2xl font-semibold">
-                        {{ $movie->title }}
-                    </h3>
-
-                    <p class="mt-2 text-[#D2C1B6]">
-                        {{ $movie->genre }} • {{ $movie->duration }} min
-                    </p>
-
-                    <button class="mt-6 w-full rounded-xl bg-[#D2C1B6] py-3 font-semibold text-[#1B3C53] transition hover:scale-[1.02]">
-                        Buy Ticket
-                    </button>
+                    <div class="px-5 pb-5">
+                        <a href="{{ route('movies.show', $movie->id) }}" class="block w-full rounded-xl bg-[#D2C1B6] py-2.5 text-center text-xs font-bold text-[#1B3C53] transition hover:opacity-90">
+                            Buy Ticket
+                        </a>
+                    </div>
                 </div>
-            </div>
-
             @empty
-
-            <div class="col-span-4">
-                <div class="rounded-3xl bg-white/5 p-10 text-center">
-
-                    <h3 class="text-2xl font-semibold">
-                        No Movies Available
-                    </h3>
+                <div class="col-span-full">
+                    <div class="rounded-2xl bg-white/5 border border-dashed border-white/10 p-12 text-center">
+                        <p class="text-sm text-[#D2C1B6]">No Movies Available At The Moment.</p>
+                    </div>
                 </div>
-            </div>
             @endforelse
         </div>
     </section>
 
-    <!-- Promo Section -->
-    <section class="container mx-auto pb-24">
-        <div class="mb-10">
-            <h2 class="text-4xl font-bold">
-                Special Offers For You
-            </h2>
+    <section class="max-w-6xl mx-auto pb-20 px-6">
+        <div class="mb-8">
+            <h2 class="text-2xl font-bold tracking-tight">Special Offers For You</h2>
         </div>
 
-        <div class="grid grid-cols-3 gap-8">
-            <!-- Promo 1 -->
-            <div class="overflow-hidden rounded-3xl bg-[#234C6A]/80 backdrop-blur-md">
-                <div class="h-56 bg-gradient-to-r from-amber-400 to-orange-500"></div>
-                <div class="p-6">
-                    <span class="rounded-full bg-yellow-300 px-3 py-1 text-sm font-medium text-black">
-                        FOOD PROMO
+        <div class="grid grid-cols-1 md:grid-cols-3 gap-6">
+            <div class="overflow-hidden rounded-2xl bg-[#234C6A]/80 border border-white/5 flex flex-col justify-between p-6">
+                <div>
+                    <span class="inline-block rounded-md bg-yellow-400/20 text-yellow-300 border border-yellow-400/30 px-2.5 py-1 text-xs font-bold uppercase">
+                        Food Promo
                     </span>
-
-                    <h3 class="mt-5 text-2xl font-semibold">
-                        Popcorn Combo
-                    </h3>
-
-                    <p class="mt-3 text-[#D2C1B6]">
+                    <h3 class="mt-4 text-xl font-bold">Popcorn Combo</h3>
+                    <p class="mt-2 text-sm text-[#D2C1B6] leading-relaxed">
                         Large popcorn + 2 drinks special price today.
                     </p>
-
-                    <button class="mt-6 rounded-xl bg-[#D2C1B6] px-6 py-3 font-semibold text-[#1B3C53]">
-                        Claim Promo
-                    </button>
                 </div>
+                <button class="mt-6 w-max rounded-xl bg-white/10 border border-white/10 px-5 py-2 text-xs font-semibold text-white hover:bg-white/20 transition">
+                    Claim Promo
+                </button>
             </div>
 
-            <!-- Promo 2 -->
-            <div class="overflow-hidden rounded-3xl bg-[#234C6A]/80 backdrop-blur-md">
-                <div class="h-56 bg-gradient-to-r from-red-400 to-pink-500"></div>
-                <div class="p-6">
-                    <span class="rounded-full bg-red-200 px-3 py-1 text-sm font-medium text-black">
-                        TICKET DEAL
+            <div class="overflow-hidden rounded-2xl bg-[#234C6A]/80 border border-white/5 flex flex-col justify-between p-6">
+                <div>
+                    <span class="inline-block rounded-md bg-red-400/20 text-red-300 border border-red-400/30 px-2.5 py-1 text-xs font-bold uppercase">
+                        Ticket Deal
                     </span>
-
-                    <h3 class="mt-5 text-2xl font-semibold">
-                        Buy 1 Get 1
-                    </h3>
-
-                    <p class="mt-3 text-[#D2C1B6]">
+                    <h3 class="mt-4 text-xl font-bold">Buy 1 Get 1</h3>
+                    <p class="mt-2 text-sm text-[#D2C1B6] leading-relaxed">
                         Buy one movie ticket and get another free.
                     </p>
-
-                    <button class="mt-6 rounded-xl bg-[#D2C1B6] px-6 py-3 font-semibold text-[#1B3C53]">
-                        Use Promo
-                    </button>
                 </div>
+                <button class="mt-6 w-max rounded-xl bg-white/10 border border-white/10 px-5 py-2 text-xs font-semibold text-white hover:bg-white/20 transition">
+                    Use Promo
+                </button>
             </div>
 
-            <!-- Promo 3 -->
-            <div class="overflow-hidden rounded-3xl bg-[#234C6A]/80 backdrop-blur-md">
-                <div class="h-56 bg-gradient-to-r from-cyan-400 to-blue-500"></div>
-                <div class="p-6">
-                    <span class="rounded-full bg-cyan-200 px-3 py-1 text-sm font-medium text-black">
-                        MEMBER
+            <div class="overflow-hidden rounded-2xl bg-[#234C6A]/80 border border-white/5 flex flex-col justify-between p-6">
+                <div>
+                    <span class="inline-block rounded-md bg-cyan-400/20 text-cyan-300 border border-cyan-400/30 px-2.5 py-1 text-xs font-bold uppercase">
+                        Member
                     </span>
-
-                    <h3 class="mt-5 text-2xl font-semibold">
-                        Member Cashback
-                    </h3>
-
-                    <p class="mt-3 text-[#D2C1B6]">
+                    <h3 class="mt-4 text-xl font-bold">Member Cashback</h3>
+                    <p class="mt-2 text-sm text-[#D2C1B6] leading-relaxed">
                         Get cashback for every movie transaction.
                     </p>
-
-                    <button class="mt-6 rounded-xl bg-[#D2C1B6] px-6 py-3 font-semibold text-[#1B3C53]">
-                        Join Now
-                    </button>
                 </div>
+                <button class="mt-6 w-max rounded-xl bg-white/10 border border-white/10 px-5 py-2 text-xs font-semibold text-white hover:bg-white/20 transition">
+                    Join Now
+                </button>
             </div>
         </div>
     </section>
 
-    <!-- Absolute Snack -->
-    <section class="container mx-auto pb-24 ">
-
-        <div class="mb-10">
-            <h2 class="text-4xl font-bold">
-                Get tasty snacks at Absolute Snack
+    <section class="max-w-6xl mx-auto pb-24 px-6">
+        <div class="overflow-hidden rounded-[28px] bg-gradient-to-r from-[#355A75] to-[#4E728C] border border-white/10 p-10 sm:p-12">
+            <span class="inline-block rounded-full bg-[#D2C1B6] px-3 py-1 text-xs font-bold text-[#1B3C53]">
+                ABSOLUTE SNACK
+            </span>
+            <h2 class="mt-6 text-3xl sm:text-4xl font-bold leading-tight">
+                Delicious food & drinks ready <br class="hidden sm:block"> 
+                to accompany your movie night
             </h2>
-        </div>
-
-        <div class="overflow-hidden rounded-3xl bg-gradient-to-r from-[#355A75] to-[#4E728C] border border-white/20 shadow-2x1 px-16 py-14">
-            <div class="flex items-center justify-between gap-10">
-                <div class="max-w-2xl">
-                    <span
-                        class="rounded-full bg-[#D2C1B6] px-4 py-2 text-sm font-medium text-[#1B3C53]">
-                        ABSOLUTE SNACK
-                    </span>
-
-                    <h2 class="mt-8 text-5xl font-bold leading-tight">
-                        Delicious food & drinks <br>
-                        ready to accompany <br>
-                        your movie night
-                    </h2>
-
-                    <button
-                        class="mt-10 rounded-xl bg-[#D2C1B6] px-8 py-4 text-lg font-semibold text-[#1B3C53] transition hover:scale-105">
-                        Order Absolute Snack
-                    </button>
-                </div>
-            </div>
+            <button class="mt-8 rounded-xl bg-[#D2C1B6] px-6 py-3 text-sm font-bold text-[#1B3C53] transition hover:scale-105">
+                Order Absolute Snack
+            </button>
         </div>
     </section>
 
-    <!-- Footer -->
-    <footer class="border-t border-white/10 py-8">
-        <div class="container mx-auto flex justify-between">
-            <p class="text-[#D2C1B6]">
-                © 2026 Absolute Cinema
-            </p>
-            <p class="text-[#D2C1B6]">
-                Premium Booking Experience
-            </p>
+    <footer class="border-t border-white/10 py-6 bg-[#1B3C53]/40">
+        <div class="max-w-6xl mx-auto px-6 flex justify-between text-xs text-[#D2C1B6]">
+            <p>© 2026 Absolute Cinema</p>
+            <p>Premium Booking Experience</p>
         </div>
     </footer>
 </div>
-
 @endsection

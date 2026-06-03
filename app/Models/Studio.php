@@ -8,6 +8,7 @@ class Studio extends Model
 {
     protected $fillable = [
         'name',
+        'type',
         'capacity',
     ];
 

@@ -4,156 +4,99 @@
 
 @section('content')
 
-<div class="flex items-center justify-between mb-6">
+@if(session('success'))
+    <div class="mb-4 rounded-xl bg-green-500/10 border border-green-500/20 p-4 text-green-400 text-sm font-medium">
+        {{ session('success') }}
+    </div>
+@endif
 
-    <h2 class="text-3xl font-bold text-[#1B3C53]">
+<div class="flex items-center justify-between mb-6">
+    <h2 class="text-3xl font-black tracking-tight text-white">
         Schedule List
     </h2>
 
-    <a href="{{ route('schedules.create') }}"
-       class="rounded-xl bg-[#234C6A] px-5 py-3 text-white transition hover:bg-[#1B3C53]">
+    <a href="{{ route('schedules.create') }}" class="rounded-xl bg-[#D2C1B6] px-5 py-3 text-xs font-bold text-[#1B3C53] transition hover:scale-105">
         Add Schedule
     </a>
-
 </div>
 
-<div class="overflow-hidden rounded-2xl bg-white shadow-sm">
-
-    <table class="w-full">
-
-        <thead class="bg-gray-50 border-b">
-
+<div class="overflow-hidden rounded-2xl bg-white/5 border border-white/10 backdrop-blur-sm">
+    <table class="w-full text-sm text-left text-white">
+        <thead class="bg-white/5 border-b border-white/10 text-xs font-bold text-[#D2C1B6] uppercase tracking-wider">
             <tr>
-
-                <th class="px-6 py-4 text-left font-semibold text-gray-600">
-                    Movie
-                </th>
-
-                <th class="px-6 py-4 text-left font-semibold text-gray-600">
-                    Studio
-                </th>
-
-                <th class="px-6 py-4 text-left font-semibold text-gray-600">
-                    Date
-                </th>
-
-                <th class="px-6 py-4 text-left font-semibold text-gray-600">
-                    Time
-                </th>
-
-                <th class="px-6 py-4 text-left font-semibold text-gray-600">
-                    Price
-                </th>
-
-                <th class="px-6 py-4 text-center font-semibold text-gray-600">
-                    Action
-                </th>
-
+                <th class="px-6 py-4">Movie</th>
+                <th class="px-6 py-4">Studio</th>
+                <th class="px-6 py-4">Date</th>
+                <th class="px-6 py-4">Time</th>
+                <th class="px-6 py-4">Price</th>
+                <th class="px-6 py-4 text-center">Action</th>
             </tr>
-
         </thead>
-
-        <tbody>
-
+        <tbody class="divide-y divide-white/5">
             @forelse($schedules as $schedule)
-
-            <tr class="border-b hover:bg-gray-50">
-
-                <td class="px-6 py-4 font-medium text-gray-800">
-                    {{ $schedule->movie->title }}
-                </td>
-
-                <td class="px-6 py-4 text-gray-600">
-                    {{ $schedule->studio->name }}
-                </td>
-
-                <td class="px-6 py-4 text-gray-600">
-                    {{ $schedule->show_date }}
-                </td>
-
-                <td class="px-6 py-4 text-gray-600">
-                    {{ $schedule->show_time }}
-                </td>
-
-                <td class="px-6 py-4 text-gray-600">
-                    Rp {{ number_format($schedule->price, 0, ',', '.') }}
-                </td>
-
-                <td class="px-6 py-4">
-
-                    <div class="flex justify-center gap-3">
-
-                        <a href="{{ route('schedules.edit', $schedule->id) }}"
-                           class="rounded-lg bg-yellow-400 px-4 py-2 text-sm font-medium text-white hover:bg-yellow-500">
-                            Edit
-                        </a>
-
-                        <form action="{{ route('schedules.destroy', $schedule->id) }}"
-                              method="POST"
-                              class="delete-form">
-
-                            @csrf
-                            @method('DELETE')
-
-                            <button type="submit"
-                                    class="rounded-lg bg-red-500 px-4 py-2 text-sm font-medium text-white hover:bg-red-600">
-                                Delete
-                            </button>
-
-                        </form>
-
-                    </div>
-
-                </td>
-
-            </tr>
-
+                <tr class="hover:bg-white/5 transition">
+                    <td class="px-6 py-4 font-bold text-white">
+                        {{ $schedule->movie->title }}
+                    </td>
+                    <td class="px-6 py-4 text-[#D2C1B6]">
+                        {{ $schedule->studio->name }} ({{ $schedule->studio->type }})
+                    </td>
+                    <td class="px-6 py-4 text-[#D2C1B6]">
+                        {{ \Carbon\Carbon::parse($schedule->show_date)->format('d M Y') }}
+                    </td>
+                    <td class="px-6 py-4 text-[#D2C1B6]">
+                        {{ \Carbon\Carbon::parse($schedule->show_time)->format('H:i') }}
+                    </td>
+                    <td class="px-6 py-4 text-[#D2C1B6]">
+                        Rp {{ number_format($schedule->price, 0, ',', '.') }}
+                    </td>
+                    <td class="px-6 py-4">
+                        <div class="flex justify-center gap-2">
+                            <a href="{{ route('schedules.edit', $schedule->id) }}" class="rounded-xl bg-yellow-500/10 border border-yellow-500/20 px-4 py-2 text-xs font-bold text-yellow-400 hover:bg-yellow-500 hover:text-white transition">
+                                Edit
+                            </a>
+                            <form action="{{ route('schedules.destroy', $schedule->id) }}" method="POST" class="delete-form m-0">
+                                @csrf
+                                @method('DELETE')
+                                <button type="submit" class="rounded-xl bg-red-500/10 border border-red-500/20 px-4 py-2 text-xs font-bold text-red-400 hover:bg-red-500 hover:text-white transition">
+                                    Delete
+                                </button>
+                            </form>
+                        </div>
+                    </td>
+                </tr>
             @empty
-
-            <tr>
-                <td colspan="6" class="py-10 text-center text-gray-500">
-                    No schedules found.
-                </td>
-            </tr>
-
+                <tr>
+                    <td colspan="6" class="py-12 text-center text-sm text-[#D2C1B6]/60">
+                        No schedules found.
+                    </td>
+                </tr>
             @endforelse
-
         </tbody>
-
     </table>
-
 </div>
 
 <script src="https://cdn.jsdelivr.net/npm/sweetalert2@11"></script>
-
 <script>
-
-document.querySelectorAll('.delete-form').forEach(form => {
-
-    form.addEventListener('submit', function(e) {
-
-        e.preventDefault();
-
-        Swal.fire({
-            title: 'Delete Schedule?',
-            text: 'This schedule will be permanently removed.',
-            icon: 'warning',
-            showCancelButton: true,
-            confirmButtonColor: '#d33',
-            cancelButtonColor: '#6b7280',
-            confirmButtonText: 'Yes, Delete'
-        }).then((result) => {
-
-            if (result.isConfirmed) {
-                form.submit();
-            }
-
+    document.querySelectorAll('.delete-form').forEach(form => {
+        form.addEventListener('submit', function(e) {
+            e.preventDefault();
+            Swal.fire({
+                title: 'Delete Schedule?',
+                text: "This schedule will be permanently removed.",
+                icon: 'warning',
+                showCancelButton: true,
+                confirmButtonColor: '#ef4444',
+                cancelButtonColor: '#4b5563',
+                confirmButtonText: 'Yes, Delete',
+                background: '#1B3C53',
+                color: '#fff'
+            }).then((result) => {
+                if (result.isConfirmed) {
+                    form.submit();
+                }
+            });
         });
-
     });
-
-});
-
 </script>
-
 @endsection

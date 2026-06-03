@@ -13,7 +13,6 @@ use App\Http\Controllers\StudioController;
 use App\Models\Movie;
 
 
-
 Route::get('/', function () {
     $movies = Movie::latest()->take(8)->get();
 
@@ -26,26 +25,30 @@ Route::middleware('auth')->group(function () {
     Route::get('/profile', [ProfileController::class, 'edit'])->name('profile.edit');
     Route::patch('/profile', [ProfileController::class, 'update'])->name('profile.update');
     Route::delete('/profile', [ProfileController::class, 'destroy'])->name('profile.destroy');
+
+    Route::get('/my-bookings', [BookingController::class, 'index'])->name('bookings.index');
+    Route::get('/bookings/{schedule}/create', [BookingController::class, 'create'])->name('bookings.create');
+    Route::post('/bookings/{schedule}', [BookingController::class, 'store'])->name('bookings.store');
+    Route::delete('/bookings/{booking}', [BookingController::class, 'destroy'])->name('bookings.destroy');
+    Route::post('/bookings/{booking}/pay', [BookingController::class, 'pay'])->name('bookings.pay');
 });
 
 Route::middleware(['auth', 'admin'])->group(function () {
-
-    Route::resource('movies', MovieController::class);
+    Route::get('/admin/bookings', [BookingController::class, 'adminIndex'])->name('admin.bookings');
+    Route::post('/admin/bookings/{booking}/approve', [BookingController::class, 'approve'])->name('admin.bookings.approve');
+    Route::delete('/admin/bookings/{booking}/force-delete', [BookingController::class, 'forceDelete'])->name('admin.bookings.forceDelete');
+    
+    Route::resource('movies', MovieController::class)->except(['show']);
     Route::resource('schedules', ScheduleController::class);
     Route::resource('seats', SeatController::class);
     Route::resource('snacks', SnackController::class);
     Route::resource('studios', StudioController::class);
 });
 
-Route::middleware('auth')->group(function () {
-
-    Route::resource('bookings', BookingController::class);
-
-});
+Route::get('/movies/{movie}', [MovieController::class, 'show'])->name('movies.show');
 
 Route::get('/schedules/{schedule}/seats', [App\Http\Controllers\ScheduleController::class, 'seats'])->name('schedules.seats');
 
-Route::get('/booking/{schedule}', [BookingController::class, 'create'])->name('booking.create');
-Route::post('/booking/{schedule}', [BookingController::class, 'store'])->name('booking.store');
+Route::delete('/studios/{studio}/seats', [SeatController::class, 'destroyByStudio'])->name('seats.destroyByStudio');
 
 require __DIR__.'/auth.php';

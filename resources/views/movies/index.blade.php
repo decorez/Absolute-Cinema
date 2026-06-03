@@ -4,151 +4,106 @@
 
 @section('content')
 
-<div class="flex items-center justify-between mb-6">
+@if(session('success'))
+    <div class="mb-4 rounded-xl bg-green-500/10 border border-green-500/20 p-4 text-green-400 text-sm font-medium">
+        {{ session('success') }}
+    </div>
+@endif
 
-    <h2 class="text-3xl font-bold text-[#1B3C53]">
+<div class="flex items-center justify-between mb-6">
+    <h2 class="text-3xl font-black tracking-tight text-white">
         Movie List
     </h2>
 
-    <a href="{{ route('movies.create') }}" class="rounded-xl bg-[#234C6A] px-5 py-3 text-white transition hover:bg-[#1B3C53]">
+    <a href="{{ route('movies.create') }}" class="rounded-xl bg-[#D2C1B6] px-5 py-3 text-xs font-bold text-[#1B3C53] transition hover:scale-105">
         Add Movie
     </a>
-
 </div>
 
-<div class="overflow-hidden rounded-2xl bg-white shadow-sm">
-
-    <table class="w-full">
-
-        <thead class="bg-gray-50 border-b">
-
+<div class="overflow-hidden rounded-2xl bg-white/5 border border-white/10 backdrop-blur-sm">
+    <table class="w-full text-sm text-left text-white">
+        <thead class="bg-white/5 border-b border-white/10 text-xs font-bold text-[#D2C1B6] uppercase tracking-wider">
             <tr>
-                <th class="px-6 py-4 text-left font-semibold text-gray-600">
-                    Poster
-                </th>
-
-                <th class="px-6 py-4 text-left font-semibold text-gray-600">
-                    Title
-                </th>
-
-                <th class="px-6 py-4 text-left font-semibold text-gray-600">
-                    Genre
-                </th>
-
-                <th class="px-6 py-4 text-left font-semibold text-gray-600">
-                    Duration
-                </th>
-
-                <th class="px-6 py-4 text-left font-semibold text-gray-600">
-                    Release Date
-                </th>
-
-                <th class="px-6 py-4 text-center font-semibold text-gray-600">
-                    Action
-                </th>
+                <th class="px-6 py-4">Poster</th>
+                <th class="px-6 py-4">Title</th>
+                <th class="px-6 py-4">Genre</th>
+                <th class="px-6 py-4">Duration</th>
+                <th class="px-6 py-4">Release Date</th>
+                <th class="px-6 py-4 text-center">Action</th>
             </tr>
-
         </thead>
-
-        <tbody>
-
+        <tbody class="divide-y divide-white/5">
             @forelse($movies as $movie)
-
-                <tr class="border-b hover:bg-gray-50">
-
+                <div style="display: none;"></div>
+                <tr class="hover:bg-white/5 transition">
                     <td class="px-6 py-4">
-
                         @if($movie->poster)
-
-                            <img src="{{ asset('storage/' . $movie->poster) }}" class="h-24 w-16 rounded-lg object-cover">
+                            <img src="{{ asset('storage/' . $movie->poster) }}" class="h-24 w-16 rounded-xl object-cover border border-white/10">
                         @else
-                            <div class="flex h-24 w-16 items-center justify-center rounded-lg bg-gray-200 text-xs text-gray-500">
+                            <div class="flex h-24 w-16 items-center justify-center rounded-xl bg-white/5 border border-dashed border-white/10 text-[10px] text-[#D2C1B6]/60 font-medium">
                                 No Image
                             </div>
-
                         @endif
-
                     </td>
-
-                    <td class="px-6 py-4 font-medium text-gray-800">
+                    <td class="px-6 py-4 font-bold text-white">
                         {{ $movie->title }}
                     </td>
-
-                    <td class="px-6 py-4 text-gray-600">
+                    <td class="px-6 py-4 text-[#D2C1B6]">
                         {{ $movie->genre }}
                     </td>
-
-                    <td class="px-6 py-4 text-gray-600">
+                    <td class="px-6 py-4 text-[#D2C1B6]">
                         {{ $movie->duration }} min
                     </td>
-
-                    <td class="px-6 py-4 text-gray-600">
+                    <td class="px-6 py-4 text-[#D2C1B6]">
                         {{ $movie->release_date }}
                     </td>
-
                     <td class="px-6 py-4">
-
-                        <div class="flex justify-center gap-3">
-
-                            <a href="{{ route('movies.edit', $movie->id) }}" class="rounded-lg bg-yellow-400 px-4 py-2 text-sm font-medium text-white hover:bg-yellow-500">
+                        <div class="flex justify-center gap-2">
+                            <a href="{{ route('movies.edit', $movie->id) }}" class="rounded-xl bg-yellow-500/10 border border-yellow-500/20 px-4 py-2 text-xs font-bold text-yellow-400 hover:bg-yellow-500 hover:text-white transition">
                                 Edit
                             </a>
-
-                            <form action="{{ route('movies.destroy', $movie->id) }}" method="POST" class="delete-form">
-
+                            <form action="{{ route('movies.destroy', $movie->id) }}" method="POST" class="delete-form m-0">
                                 @csrf
                                 @method('DELETE')
-
-                                <button type="submit" class="rounded-lg bg-red-500 px-4 py-2 text-sm font-medium text-white hover:bg-red-600">
+                                <button type="submit" class="rounded-xl bg-red-500/10 border border-red-500/20 px-4 py-2 text-xs font-bold text-red-400 hover:bg-red-500 hover:text-white transition">
                                     Delete
                                 </button>
                             </form>
-
                         </div>
                     </td>
                 </tr>
             @empty
-
                 <tr>
-
-                    <td colspan="6" class="py-10 text-center text-gray-500">
+                    <td colspan="6" class="py-12 text-center text-sm text-[#D2C1B6]/60">
                         No movies found.
                     </td>
                 </tr>
             @endforelse
-
         </tbody>
     </table>
 </div>
 
 <script src="https://cdn.jsdelivr.net/npm/sweetalert2@11"></script>
-
 <script>
-
     document.querySelectorAll('.delete-form').forEach(form => {
         form.addEventListener('submit', function(e) {
             e.preventDefault();
-
             Swal.fire({
                 title: 'Delete Movie?',
                 text: "This movie will be permanently removed.",
                 icon: 'warning',
                 showCancelButton: true,
-                confirmButtonColor: '#d33',
-                cancelButtonColor: '#6b7280',
-                confirmButtonText: 'Yes, Delete'
+                confirmButtonColor: '#ef4444',
+                cancelButtonColor: '#4b5563',
+                confirmButtonText: 'Yes, Delete',
+                background: '#1B3C53',
+                color: '#fff'
             }).then((result) => {
-
                 if (result.isConfirmed) {
                     form.submit();
                 }
-
             });
-
         });
-
     });
-
 </script>
-
 @endsection

@@ -14,7 +14,7 @@ class ScheduleController extends Controller
      */
     public function index()
     {
-        $schedules = Schedule::with(['movie', 'studio'])->get();
+        $schedules = Schedule::with(['movie', 'studio'])->orderBy('show_date', 'asc')->orderBy('show_time', 'asc')->get();
 
         return view('schedules.index', compact('schedules'));
     }
@@ -36,11 +36,11 @@ class ScheduleController extends Controller
     public function store(Request $request)
     {
         $input = $request->validate([
-            'movie_id' => 'required',
-            'studio_id' => 'required',
-            'show_date' => 'required',
+            'movie_id' => 'required|exists:movies,id',
+            'studio_id' => 'required|exists:studios,id',
+            'show_date' => 'required|date',
             'show_time' => 'required',
-            'price' => 'required',
+            'price' => 'required|numeric|min:0',
         ]);
 
         Schedule::create($input);
@@ -73,11 +73,11 @@ class ScheduleController extends Controller
     public function update(Request $request, Schedule $schedule)
     {
         $input = $request->validate([
-            'movie_id' => 'required',
-            'studio_id' => 'required',
-            'show_date' => 'required',
+            'movie_id' => 'required|exists:movies,id',
+            'studio_id' => 'required|exists:studios,id',
+            'show_date' => 'required|date',
             'show_time' => 'required',
-            'price' => 'required',
+            'price' => 'required|numeric|min:0',
         ]);
 
         $schedule->update($input);

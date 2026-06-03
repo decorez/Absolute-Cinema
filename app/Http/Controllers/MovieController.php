@@ -83,4 +83,15 @@ class MovieController extends Controller
         $movie->delete();
         return redirect()->route('movies.index')->with('success', 'Movie deleted successfully.');
     }
+
+    public function show(Movie $movie)
+    {
+        $schedules = $movie->schedules()
+            ->with('studio')
+            ->orderBy('show_date')
+            ->orderBy('show_time')
+            ->get();
+
+        return view('movies.show', compact('movie', 'schedules'));
+    }
 }

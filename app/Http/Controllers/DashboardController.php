@@ -17,6 +17,10 @@ class DashboardController extends Controller
             'totalSchedules' => Schedule::count(),
             'totalSnacks' => Snack::count(),
             'totalBookings' => Booking::count(),
+            'recentBookings' => Booking::with('user')->latest()->take(5)->get(),
+            'totalrevenue' => Booking::where('status', 'paid')->sum('total_price'),
+            'pendingApproval' => Booking::where('status', 'pending')->count(),
         ]);
+        
     }
 }

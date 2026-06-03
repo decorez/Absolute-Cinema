@@ -16,8 +16,8 @@ return new class extends Migration
             $table->id();
             $table->foreignId('studio_id')->constrained()->onDelete('cascade');
             $table->string('seat_number');
-            $table->boolean('is_booked')->default(false);
             $table->timestamps();
+            $table->unique(['studio_id', 'seat_number']);
         });
     }
 

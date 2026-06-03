@@ -32,12 +32,13 @@ class StudioController extends Controller
     {
         $input = $request->validate([
             'name' => 'required',
+            'type' => 'required',
             'capacity' => 'required|integer|min:1',
         ]);
 
         Studio::create($input);
 
-        return redirect()->route('studios.index');
+        return redirect()->route('studios.index')->with('success', 'Studio added successfully.');
     }
 
     /**
@@ -63,12 +64,13 @@ class StudioController extends Controller
     {
         $input = $request->validate([
             'name' => 'required',
+            'type' => 'required',
             'capacity' => 'required|integer|min:1',
         ]);
 
         $studio->update($input);
 
-        return redirect()->route('studios.index');
+        return redirect()->route('studios.index')->with('success', 'Studio updated successfully.');
     }
 
     /**
@@ -78,6 +80,6 @@ class StudioController extends Controller
     {
         $studio->delete();
 
-        return redirect()->route('studios.index');
+        return redirect()->route('studios.index')->with('success', 'Studio deleted successfully.');
     }
 }

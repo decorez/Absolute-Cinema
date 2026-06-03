@@ -10,54 +10,63 @@ use App\Models\BookingDetail;
 
 class BookingController extends Controller
 {
-    /**
-     * Display a listing of the resource.
-     */
     public function index()
     {
-        $bookings = Booking::with(['user', 'schedule.movie'])->get();
+        $bookings = Booking::with(['schedule.movie', 'bookingDetails.seat'])->where('user_id', auth()->id())->orderByRaw("FIELD(status, 'pending', 'paid', 'cancelled')")->latest()->get();
 
         return view('bookings.index', compact('bookings'));
     }
 
-    /**
-     * Show the form for creating a new resource.
-     */
-    public function create()
+    public function adminIndex()
     {
-        $schedules = Schedule::with('movie')->get();
-        $seats = Seat::all();
-        return view('bookings.create', compact('schedules','seats'));
+        $bookings = Booking::with(['user', 'schedule.movie', 'bookingDetails.seat'])->latest()->get();
+
+        return view('admin.bookings.index', compact('bookings'));
     }
 
-    /**
-     * Store a newly created resource in storage.
-     */
-    public function store(Request $request)
+    public function create(Schedule $schedule)
     {
+        $schedule->load(['movie','studio.seats']);
+
+        $bookedSeatIds = BookingDetail::whereHas('booking', function ($query) use ($schedule) {
+            $query->where('schedule_id', $schedule->id)
+                  ->whereIn('status', ['pending', 'paid']);
+        })->pluck('seat_id');
+
+        return view('bookings.create', [
+            'schedule' => $schedule,
+            'bookedSeatIds' => $bookedSeatIds,
+        ]);
+    }
+
+    public function store(Request $request, Schedule $schedule)
+    {
+        $input = $request->validate([
+            'seats' => 'required|array|min:1',
+        ]);
+    
         $booking = Booking::create([
             'user_id' => auth()->id(),
-            'schedule_id' => $request->schedule_id,
-        ]);
-        BookingDetail::create([
-            'booking_id' => $booking->id,
-            'seat_id' => $request->seat_id,
+            'schedule_id' => $schedule->id,
+            'total_price' => count($input['seats']) * $schedule->price,
+            'status' => 'pending',
         ]);
 
-        return redirect()->route('bookings.index');
+        foreach($input['seats'] as $seatId) {
+            BookingDetail::create([
+                'booking_id' => $booking->id,
+                'seat_id' => $seatId,
+            ]);
+        }
+
+        return redirect()->route('bookings.index')->with('success', 'Booking created successfully!');
     }
 
-    /**
-     * Display the specified resource.
-     */
     public function show(Booking $booking)
     {
         //
     }
 
-    /**
-     * Show the form for editing the specified resource.
-     */
     public function edit(Booking $booking)
     {
         $schedules = Schedule::with('movie')->get();
@@ -65,21 +74,48 @@ class BookingController extends Controller
         return view('bookings.edit', compact('booking', 'schedules'));
     }
 
-    /**
-     * Update the specified resource in storage.
-     */
     public function update(Request $request, Booking $booking)
     {
         //
     }
 
-    /**
-     * Remove the specified resource from storage.
-     */
     public function destroy(Booking $booking)
     {
+        $booking->update([
+            'status' => 'cancelled'
+        ]);
+
+        if (auth()->user()->role === 'admin') {
+            return redirect()->route('admin.bookings')->with('success', 'Booking status changed to cancelled.');
+        }
+
+        return redirect()->route('bookings.index')->with('success', 'Booking cancelled');
+    }
+    
+    public function forceDelete(Booking $booking)
+    {
+        $booking->bookingDetails()->delete();
+        
         $booking->delete();
-        return redirect()->route('bookings.index');
+
+        return redirect()->route('admin.bookings')->with('success', 'Booking permanently deleted from database.');
     }
 
+    public function pay(Booking $booking)
+    {
+        $booking->update([
+            'status' => 'paid'
+        ]);
+
+        return redirect()->route('bookings.index')->with('success', 'Payment successful!');
+    }
+
+    public function approve(Booking $booking)
+    {
+        $booking->update([
+            'status' => 'paid'
+        ]);
+
+        return redirect()->route('admin.bookings')->with('success', 'Booking approved successfully!');
+    }
 }

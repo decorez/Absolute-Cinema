@@ -34,19 +34,19 @@ class SeatController extends Controller
     public function store(Request $request)
     {
         $input = $request->validate([
-            'studio_id' => 'required',
-            'rows' => 'required|integer|min:1',
-            'cols' => 'nullable|integer|min:1   ',
+            'studio_id' => 'required|exists:studios,id',
+            'rows' => 'required|integer|min:1|max:20',
+            'cols' => 'nullable|integer|min:1|max:10',
         ]);
 
         $studioId = $input['studio_id'];
+        $maxCols = $input['cols'] ?? 10;
 
         for($r = 0; $r < $input['rows']; $r++) {
-
             $rowLetter = chr(65 + $r);
 
-            for($c = 1; $c < ($input['cols'] ?? 10); $c++) {
-                Seat::create([
+            for($c = 1; $c <= $maxCols; $c++) {
+                Seat::firstOrCreate([
                     'studio_id' => $studioId,
                     'seat_number' => $rowLetter . $c,
                 ]);
@@ -69,10 +69,7 @@ class SeatController extends Controller
      */
     public function edit(Seat $seat)
     {
-        return view('seats.edit', [
-            'seat' => $seat,
-            'schedules' => Schedule::all(),
-        ]);
+        return view('seats.edit', compact('seat'));
     }
 
     /**
@@ -81,15 +78,11 @@ class SeatController extends Controller
     public function update(Request $request, Seat $seat)
     {
         $input = $request->validate([
-            'schedule_id' => 'required',
-            'seat_number' => 'required',
-            'is_booked' => 'nullable',
+            'seat_number' => 'required|string|max:10',
         ]);
 
         $seat->update([
-            'schedule_id' => $input['schedule_id'],
             'seat_number' => $input['seat_number'],
-            'is_booked' => $input['is_booked'] ?? false,
         ]);
 
         return redirect()->route('seats.index')->with('success', 'Seat updated successfully.');
@@ -100,7 +93,12 @@ class SeatController extends Controller
      */
     public function destroy(Seat $seat)
     {
-        $seat->delete();
-        return redirect()->route('seats.index')->with('success', 'Seat deleted successfully.');
+        // ganti dengan delete by studio
+    }
+
+    public function destroyByStudio(Studio $studio)
+    {
+        $studio->seats()->delete();
+        return redirect()->route('seats.index')->with('success', 'All seats deleted successfully.');
     }
 }
