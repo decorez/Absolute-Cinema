@@ -1,4 +1,4 @@
-@extends('layouts.app') {{-- Pastikan kamu punya layout ini, atau gunakan layout user biasa --}}
+@extends('layouts.app')
 
 @section('title', 'My Tickets')
 
@@ -15,35 +15,70 @@
         <div class="grid gap-4">
             @forelse($bookings as $booking)
                 <div class="bg-white/5 border border-white/10 p-6 rounded-2xl flex flex-wrap items-center justify-between gap-4">
+
                     <div>
-                        <h3 class="text-xl font-bold text-white">{{ $booking->schedule->movie->title }}</h3>
-                        <p class="text-[#D2C1B6] text-sm">{{ $booking->schedule->show_date }} | {{ $booking->schedule->show_time }}</p>
-                        <p class="text-white font-bold mt-2">
-                            @foreach($booking->bookingDetails as $detail)
-                                <span class="bg-white/10 px-2 py-1 rounded text-xs mr-1">{{ $detail->seat->seat_number }}</span>
-                            @endforeach
+                        <h3 class="text-xl font-bold text-white">
+                            {{ $booking->schedule->movie->title }}
+                        </h3>
+
+                        <p class="text-[#D2C1B6] text-sm">
+                            {{ $booking->schedule->show_date }}
+                            |
+                            {{ $booking->schedule->show_time }}
                         </p>
-                    </div>
-                    
-                    <div class="text-right">
-                        <span class="block text-lg font-bold text-white mb-2">Rp {{ number_format($booking->total_price, 0, ',', '.') }}</span>
-                        <div class="flex gap-2">
-                            @if($booking->status === 'pending')
-                                <form action="{{ route('bookings.pay', $booking->id) }}" method="POST">
-                                    @csrf
-                                    <button class="bg-[#D2C1B6] text-[#1B3C53] px-4 py-1.5 rounded-lg text-xs font-bold hover:scale-105 transition">Pay Now</button>
-                                </form>
-                            @endif
-                            <span class="px-3 py-1.5 rounded-lg text-xs font-bold uppercase {{ $booking->status === 'paid' ? 'bg-emerald-500/20 text-emerald-400' : 'bg-amber-500/20 text-amber-400' }}">
-                                {{ $booking->status }}
-                            </span>
+
+                        <div class="mt-2">
+                            @foreach($booking->bookingDetails as $detail)
+                                <span class="bg-white/10 px-2 py-1 rounded text-xs mr-1 text-white">
+                                    {{ $detail->seat->seat_number }}
+                                </span>
+                            @endforeach
                         </div>
                     </div>
+
+                    <div class="text-right">
+
+                        <span class="block text-lg font-bold text-white mb-2">
+                            Rp {{ number_format($booking->total_price, 0, ',', '.') }}
+                        </span>
+
+                        <div class="flex gap-2 justify-end items-center">
+
+                            @if($booking->status === 'pending')
+                                <a href="{{ route('bookings.qr', $booking->id) }}"
+                                class="bg-[#D2C1B6] text-[#1B3C53] px-4 py-1.5 rounded-lg text-xs font-bold hover:scale-105 transition">
+                                    Pay Now
+                                </a>
+                            @endif
+
+                            @if($booking->status === 'paid')
+                                <span class="bg-emerald-500 text-white px-4 py-1.5 rounded-lg text-xs font-bold">
+                                    Paid
+                                </span>
+                            @endif
+
+                            <span
+                                class="px-3 py-1.5 rounded-lg text-xs font-bold uppercase
+                                {{ $booking->status === 'paid'
+                                    ? 'bg-emerald-500/20 text-emerald-400'
+                                    : ($booking->status === 'cancelled'
+                                        ? 'bg-red-500/20 text-red-400'
+                                        : 'bg-amber-500/20 text-amber-400') }}">
+                                {{ $booking->status }}
+                            </span>
+
+                        </div>
+
+                    </div>
+
                 </div>
             @empty
-                <div class="text-center py-20 text-[#D2C1B6]">No tickets found.</div>
+                <div class="text-center py-20 text-[#D2C1B6]">
+                    No tickets found.
+                </div>
             @endforelse
         </div>
+
     </div>
 </div>
 @endsection

@@ -7,6 +7,7 @@ use App\Models\Schedule;
 use App\Models\Seat;
 use App\Models\Booking;
 use App\Models\BookingDetail;
+use Illuminate\Support\Str;
 
 class BookingController extends Controller
 {
@@ -48,6 +49,7 @@ class BookingController extends Controller
         $booking = Booking::create([
             'user_id' => auth()->id(),
             'schedule_id' => $schedule->id,
+            'booking_code' => Str::uuid(),
             'total_price' => count($input['seats']) * $schedule->price,
             'status' => 'pending',
         ]);
@@ -118,4 +120,29 @@ class BookingController extends Controller
 
         return redirect()->route('admin.bookings')->with('success', 'Booking approved successfully!');
     }
+    public function showPaymentQr(Booking $booking)
+    {
+        $booking->refresh();
+
+        if ($booking->status === 'paid') {
+            return redirect()->route('bookings.index')
+                ->with('success', 'Payment successful!');
+        }
+
+        return view('bookings.payment-qr', compact('booking'));
+    }
+    public function scanPayment($code)
+    {
+        $booking = Booking::where('booking_code', $code)
+            ->firstOrFail();
+
+        $booking->update([
+            'status' => 'paid'
+        ]);
+
+        return redirect()
+            ->route('bookings.index')
+            ->with('success', 'Payment successful!');
+    }
+
 }

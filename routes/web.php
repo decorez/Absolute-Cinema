@@ -51,4 +51,9 @@ Route::get('/schedules/{schedule}/seats', [App\Http\Controllers\ScheduleControll
 
 Route::delete('/studios/{studio}/seats', [SeatController::class, 'destroyByStudio'])->name('seats.destroyByStudio');
 
+Route::get('/pay-booking/{code}', [BookingController::class, 'scanPayment'])
+    ->name('booking.scanPayment');
+
+Route::get('/bookings/{booking}/payment-qr', [BookingController::class, 'showPaymentQr'])
+    ->name('bookings.qr');
 require __DIR__.'/auth.php';
