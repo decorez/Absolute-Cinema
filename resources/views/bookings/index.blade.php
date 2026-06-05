@@ -46,15 +46,18 @@
 
                             @if($booking->status === 'pending')
                                 <a href="{{ route('bookings.qr', $booking->id) }}"
-                                class="bg-[#D2C1B6] text-[#1B3C53] px-4 py-1.5 rounded-lg text-xs font-bold hover:scale-105 transition">
+                                class="bg-[#D2C1B6] text-[#1B3C53] px-4 py-1.5 rounded-lg text-xs font-bold hover:scale-105 transition uppercase">
                                     Pay Now
                                 </a>
-                            @endif
 
-                            @if($booking->status === 'paid')
-                                <span class="bg-emerald-500 text-white px-4 py-1.5 rounded-lg text-xs font-bold">
-                                    Paid
-                                </span>
+                                <form action="{{ route('bookings.destroy', $booking->id) }}" method="POST" class="cancel-form m-0 inline-block">
+                                    @csrf
+                                    @method('DELETE')
+                                    <button type="submit"
+                                            class="bg-red-500/10 text-red-400 border border-red-500/20 px-4 py-1.5 rounded-lg text-xs font-bold hover:bg-red-500 hover:text-white transition uppercase">
+                                        Cancel
+                                    </button>
+                                </form>
                             @endif
 
                             <span
@@ -81,4 +84,32 @@
 
     </div>
 </div>
+
+<script src="https://cdn.jsdelivr.net/npm/sweetalert2@11"></script>
+
+<script>
+document.querySelectorAll('.cancel-form').forEach(form => {
+    form.addEventListener('submit', function(e) {
+        e.preventDefault();
+
+        Swal.fire({
+            title: 'Cancel Booking?',
+            text: "Your seat will be released again.",
+            icon: 'warning',
+            showCancelButton: true,
+            confirmButtonColor: '#ef4444',
+            cancelButtonColor: '#4b5563',
+            confirmButtonText: 'Yes, cancel it',
+            cancelButtonText: 'No',
+            background: '#1B3C53',
+            color: '#fff'
+        }).then((result) => {
+            if (result.isConfirmed) {
+                form.submit();
+            }
+        });
+    });
+});
+</script>
+
 @endsection

@@ -10,5 +10,6 @@ class Snack extends Model
         'name',
         'price',
         'stock',
+        'image',
     ];
 }

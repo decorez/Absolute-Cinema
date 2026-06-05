@@ -14,10 +14,18 @@ use App\Models\Movie;
 
 
 Route::get('/', function () {
-    $movies = Movie::latest()->take(8)->get();
-
+    $movies = Movie::latest()->take(4)->get();
     return view('home', compact('movies'));
 });
+
+Route::get('/all-movies', function () {
+    $movies = Movie::latest()->get();
+    return view('movies.all', compact('movies'));
+})->name('movies.all');
+
+Route::get('/all-promos', function () {
+    return view('promos.all');
+})->name('promos.all');
 
 Route::get('/dashboard', [DashboardController::class, 'index'])->middleware(['auth', 'admin'])->name('dashboard');
 
@@ -34,6 +42,13 @@ Route::middleware('auth')->group(function () {
 });
 
 Route::middleware(['auth', 'admin'])->group(function () {
+    Route::get('/snacks', [SnackController::class, 'adminIndex'])->name('snacks.admin');
+    Route::get('/snacks/create', [SnackController::class, 'create'])->name('snacks.create');
+    Route::post('/snacks', [SnackController::class, 'store'])->name('snacks.store');
+    Route::get('/snacks/{snack}/edit', [SnackController::class, 'edit'])->name('snacks.edit');
+    Route::put('/snacks/{snack}', [SnackController::class, 'update'])->name('snacks.update');
+    Route::delete('/snacks/{snack}', [SnackController::class, 'destroy'])->name('snacks.destroy');
+
     Route::get('/admin/bookings', [BookingController::class, 'adminIndex'])->name('admin.bookings');
     Route::post('/admin/bookings/{booking}/approve', [BookingController::class, 'approve'])->name('admin.bookings.approve');
     Route::delete('/admin/bookings/{booking}/force-delete', [BookingController::class, 'forceDelete'])->name('admin.bookings.forceDelete');
@@ -41,11 +56,12 @@ Route::middleware(['auth', 'admin'])->group(function () {
     Route::resource('movies', MovieController::class)->except(['show']);
     Route::resource('schedules', ScheduleController::class);
     Route::resource('seats', SeatController::class);
-    Route::resource('snacks', SnackController::class);
     Route::resource('studios', StudioController::class);
 });
 
 Route::get('/movies/{movie}', [MovieController::class, 'show'])->name('movies.show');
+
+Route::get('/snacks-lounge', [SnackController::class, 'index'])->name('snacks.all');
 
 Route::get('/schedules/{schedule}/seats', [App\Http\Controllers\ScheduleController::class, 'seats'])->name('schedules.seats');
 

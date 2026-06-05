@@ -12,6 +12,12 @@ class SnackController extends Controller
      */
     public function index()
     {
+        $snacks = \App\Models\Snack::all(); 
+        return view('snacks.all', compact('snacks'));
+    }
+
+    public function adminIndex()
+    {
         $snacks = Snack::all();
         return view('snacks.index', compact('snacks'));
     }
@@ -33,10 +39,16 @@ class SnackController extends Controller
             'name' => 'required',
             'price' => 'required|numeric|min:0',
             'stock' => 'required|integer|min:0',
+            'image' => 'nullable|image|mimes:jpeg,png,jpg,webp|max:2048',
         ]);
 
+        if ($request->hasFile('image')) {
+            $imagePath = $request->file('image')->store('snacks', 'public');
+            $validated['image'] = $imagePath;
+        }
+
         Snack::create($validated);
-        return redirect()->route('snacks.index')->with('success', 'Snack added successfully.');
+        return redirect()->route('snacks.admin')->with('success', 'Snack added successfully.');
     }
 
     /**
@@ -66,7 +78,7 @@ class SnackController extends Controller
             'stock' => 'required|integer|min:0',
         ]);
         $snack->update($validated);
-        return redirect()->route('snacks.index')->with('success', 'Snack updated successfully.');
+        return redirect()->route('snacks.admin')->with('success', 'Snack updated successfully.');
     }
 
     /**
@@ -75,6 +87,6 @@ class SnackController extends Controller
     public function destroy(Snack $snack)
     {
         $snack->delete();
-        return redirect()->route('snacks.index')->with('success', 'Snack deleted successfully.');
+        return redirect()->route('snacks.admin')->with('success', 'Snack deleted successfully.');
     }
 }
