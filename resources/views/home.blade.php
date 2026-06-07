@@ -78,6 +78,23 @@
                             <h2 class="text-xl sm:text-3xl font-extrabold text-white leading-tight max-w-2xl">Absolute Cinema's Menu Officially Halal Certified</h2>
                         </div>
                     </div>
+                    <div class="swiper-slide relative w-full h-full">
+                        <a href="{{ route('snacks.all') }}">
+                            <img src="{{ asset('images/snack.webp') }}"
+                                class="w-full h-full object-cover"
+                                alt="Absolute Snack">
+
+                            <div class="absolute inset-0 bg-gradient-to-t from-black/90 via-black/30 to-transparent flex flex-col justify-end p-6 sm:p-10">
+                                <span class="w-max bg-yellow-500 text-[#1B3C53] text-xs font-black px-2.5 py-1 rounded mb-2 uppercase tracking-wider">
+                                    Absolute Snack
+                                </span>
+
+                                <h2 class="text-xl sm:text-3xl font-extrabold text-white">
+                                    Fresh Popcorn, Drinks & Combos
+                                </h2>
+                            </div>
+                        </a>
+                    </div>
                 </div>
             </div>
             <button class="hero-prev absolute left-4 top-1/2 -translate-y-1/2 z-10 w-10 h-10 rounded-full bg-black/50 hover:bg-black/80 text-white flex items-center justify-center opacity-0 group-hover/hero:opacity-100 transition-opacity duration-300 focus:outline-none backdrop-blur-sm">

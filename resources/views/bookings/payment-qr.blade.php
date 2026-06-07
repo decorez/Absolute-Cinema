@@ -17,7 +17,13 @@
         <h1 class="text-xl font-black text-white mt-4 mb-2 uppercase tracking-wider">
             Scan QR to Pay
         </h1>
-        <p class="text-xs text-[#D2C1B6] mb-6">Please complete your payment to secure your seat.</p>
+        <p class="text-xs text-[#D2C1B6] mb-6">
+            @if($booking->schedule)
+                Please complete your payment to secure your seat.
+            @else
+                Please complete your payment for your snack order.
+            @endif
+        </p>
 
         <div class="flex justify-center bg-white p-5 rounded-2xl shadow-inner inline-block mx-auto max-w-[280px]">
             {!! QrCode::size(240)->margin(1)->generate(

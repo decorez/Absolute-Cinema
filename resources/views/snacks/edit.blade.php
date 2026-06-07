@@ -18,6 +18,21 @@
             </label>
             <input type="text" name="name" value="{{ $snack->name }}" class="w-full rounded-xl bg-white/5 border border-white/10 p-3 text-white focus:outline-none focus:border-[#D2C1B6]">
         </div>
+        
+        <div class="mb-5">
+            <label class="mb-2 block text-xs font-bold uppercase tracking-wider text-[#D2C1B6]">
+                Category
+            </label>
+
+            <select
+                name="category"
+                class="w-full rounded-xl bg-[#234C6A] border border-white/10 p-3 text-white focus:outline-none focus:border-[#D2C1B6]"            >
+                <option value="">Select Category</option>
+                <option value="Popcorn">Popcorn</option>
+                <option value="Beverage">Beverage</option>
+                <option value="Sides">Sides</option>
+            </select>
+        </div>
 
         <div class="mb-6">
             <label class="mb-2 block text-xs font-bold uppercase tracking-wider text-[#D2C1B6]">

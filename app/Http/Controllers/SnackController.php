@@ -10,10 +10,15 @@ class SnackController extends Controller
     /**
      * Display a listing of the resource.
      */
-    public function index()
+    public function index(Request $request)
     {
-        $snacks = \App\Models\Snack::all(); 
-        return view('snacks.all', compact('snacks'));
+        $category = $request->category;
+
+        $snacks = Snack::when($category && $category !== 'All', function ($query) use ($category) {
+            $query->where('category', $category);
+        })->get();
+
+        return view('snacks.all', compact('snacks', 'category'));
     }
 
     public function adminIndex()
@@ -37,6 +42,7 @@ class SnackController extends Controller
     {
         $validated = $request->validate([
             'name' => 'required',
+            'category' => 'required',
             'price' => 'required|numeric|min:0',
             'stock' => 'required|integer|min:0',
             'image' => 'nullable|image|mimes:jpeg,png,jpg,webp|max:2048',
@@ -74,11 +80,22 @@ class SnackController extends Controller
     {
         $validated = $request->validate([
             'name' => 'required',
+            'category' => 'required',
             'price' => 'required|numeric|min:0',
             'stock' => 'required|integer|min:0',
+            'image' => 'nullable|image|mimes:jpeg,png,jpg,webp|max:2048',
         ]);
+
+        if ($request->hasFile('image')) {
+            $validated['image'] = $request->file('image')
+                ->store('snacks', 'public');
+        }
+
         $snack->update($validated);
-        return redirect()->route('snacks.admin')->with('success', 'Snack updated successfully.');
+
+        return redirect()
+            ->route('snacks.admin')
+            ->with('success', 'Snack updated successfully.');
     }
 
     /**

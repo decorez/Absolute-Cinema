@@ -11,11 +11,13 @@ use App\Http\Controllers\BookingController;
 use App\Http\Controllers\DashboardController;
 use App\Http\Controllers\StudioController;
 use App\Models\Movie;
-
+use App\Models\Snack;
 
 Route::get('/', function () {
     $movies = Movie::latest()->take(4)->get();
-    return view('home', compact('movies'));
+    $snacks = Snack::latest()->take(4)->get();
+
+    return view('home', compact('movies', 'snacks'));
 });
 
 Route::get('/all-movies', function () {
@@ -72,4 +74,9 @@ Route::get('/pay-booking/{code}', [BookingController::class, 'scanPayment'])
 
 Route::get('/bookings/{booking}/payment-qr', [BookingController::class, 'showPaymentQr'])
     ->name('bookings.qr');
+    
+Route::post('/checkout/snacks', [BookingController::class, 'snackCheckout'])
+    ->middleware('auth')
+    ->name('snacks.checkout');
+
 require __DIR__.'/auth.php';
