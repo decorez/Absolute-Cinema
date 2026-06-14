@@ -48,6 +48,9 @@
                     <a href="/snacks" class="block rounded-xl px-4 py-3 transition {{ request()->is('snacks*') ? 'text-white bg-white/10 font-bold' : 'text-white/60 hover:text-white hover:bg-white/5' }}">
                         Snacks
                     </a>
+                    <a href="/admin/promos" class="block rounded-xl px-4 py-3 transition {{ request()->is('promos*') ? 'text-white bg-white/10 font-bold' : 'text-white/60 hover:text-white hover:bg-white/5' }}">
+                        Promos
+                    </a>
                     <a href="/admin/bookings" class="block rounded-xl px-4 py-3 transition {{ request()->is('bookings*') ? 'text-white bg-white/10 font-bold' : 'text-white/60 hover:text-white hover:bg-white/5' }}">
                         Bookings
                     </a>

@@ -10,14 +10,18 @@ use App\Http\Controllers\SnackController;
 use App\Http\Controllers\BookingController;
 use App\Http\Controllers\DashboardController;
 use App\Http\Controllers\StudioController;
+use App\Http\Controllers\PromoController;
+
 use App\Models\Movie;
 use App\Models\Snack;
+use App\Models\Promo;
 
 Route::get('/', function () {
     $movies = Movie::latest()->take(4)->get();
     $snacks = Snack::latest()->take(4)->get();
+    $promos = Promo::latest()->get();
 
-    return view('home', compact('movies', 'snacks'));
+    return view('home', compact('movies', 'snacks', 'promos'));
 });
 
 Route::get('/all-movies', function () {
@@ -25,9 +29,7 @@ Route::get('/all-movies', function () {
     return view('movies.all', compact('movies'));
 })->name('movies.all');
 
-Route::get('/all-promos', function () {
-    return view('promos.all');
-})->name('promos.all');
+Route::get('/all-promos', [PromoController::class, 'index'])->name('promos.all');
 
 Route::get('/dashboard', [DashboardController::class, 'index'])->middleware(['auth', 'admin'])->name('dashboard');
 
@@ -41,6 +43,8 @@ Route::middleware('auth')->group(function () {
     Route::post('/bookings/{schedule}', [BookingController::class, 'store'])->name('bookings.store');
     Route::delete('/bookings/{booking}', [BookingController::class, 'destroy'])->name('bookings.destroy');
     Route::post('/bookings/{booking}/pay', [BookingController::class, 'pay'])->name('bookings.pay');
+
+    Route::post('/promos/{id}/claim', [PromoController::class, 'claim'])->name('promos.claim');
 });
 
 Route::middleware(['auth', 'admin'])->group(function () {
@@ -50,6 +54,13 @@ Route::middleware(['auth', 'admin'])->group(function () {
     Route::get('/snacks/{snack}/edit', [SnackController::class, 'edit'])->name('snacks.edit');
     Route::put('/snacks/{snack}', [SnackController::class, 'update'])->name('snacks.update');
     Route::delete('/snacks/{snack}', [SnackController::class, 'destroy'])->name('snacks.destroy');
+
+    Route::get('/admin/promos', [PromoController::class, 'adminIndex'])->name('promos.index');
+    Route::get('/admin/promos/create', [PromoController::class, 'create'])->name('promos.create');
+    Route::post('/admin/promos', [PromoController::class, 'store'])->name('promos.store');
+    Route::get('/admin/promos/{promo}/edit', [PromoController::class, 'edit'])->name('promos.edit');
+    Route::put('/admin/promos/{promo}', [PromoController::class, 'update'])->name('promos.update');
+    Route::delete('/admin/promos/{promo}', [PromoController::class, 'destroy'])->name('promos.destroy');
 
     Route::get('/admin/bookings', [BookingController::class, 'adminIndex'])->name('admin.bookings');
     Route::post('/admin/bookings/{booking}/approve', [BookingController::class, 'approve'])->name('admin.bookings.approve');

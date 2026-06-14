@@ -2,13 +2,17 @@
 
 namespace App\Http\Controllers;
 
-use Illuminate\Http\Request;
+use App\Models\Movie;
 use App\Models\Schedule;
 use App\Models\Seat;
 use App\Models\Booking;
 use App\Models\BookingDetail;
-use Illuminate\Support\Str;
 use App\Models\Snack;
+
+use Illuminate\Http\Request;
+use Illuminate\Support\Str;
+use Illuminate\Support\Facades\Auth;
+use Illuminate\Support\Facades\DB;
 
 class BookingController extends Controller
 {
@@ -26,9 +30,21 @@ class BookingController extends Controller
         return view('admin.bookings.index', compact('bookings'));
     }
 
+    public function checkout($movieId)
+    {
+        $user = Auth::user();
+        $movie = Movie::findOrFail($movieId);
+        $ticketPrice = $movie->price;
+
+        $availablePromos = DB::table('claimed_promos')->join('promos', 'claimed_promos::promo_id', '=', 'promos.id')
+            ->where('claimed_promos.user_id', $user->id)->where('promos.end_date', '>=', now())->select('promos.*')->get();
+
+        return view('bookings.checkout', compact('movie', 'ticketPrice', 'availablePromos'));
+    }
+
     public function create(Schedule $schedule)
     {
-        $schedule->load(['movie','studio.seats']);
+        $schedule->load(['movie', 'studio.seats']);
 
         $bookedSeatIds = BookingDetail::whereHas('booking', function ($query) use ($schedule) {
             $query->where('schedule_id', $schedule->id)
@@ -49,6 +65,7 @@ class BookingController extends Controller
         $input = $request->validate([
             'seats' => 'required|array|min:1',
             'snacks' => 'nullable|array',
+            'promo_id' => 'nullable|exists:promos,id',
         ]);
 
         if ($request->filled('snacks')) {
@@ -73,11 +90,29 @@ class BookingController extends Controller
             }
         }
 
+        $subTotal = $ticketTotal + $snackTotal;
+        $discount = 0;
+
+        if ($request->filled('promo_id')) {
+            $hasVoucher = DB::table('claimed_promos')
+                ->where('user_id', auth()->id())
+                ->where('promo_id', $request->promo_id)
+                ->exists();
+
+            if ($hasVoucher) {
+                $discount = 15000;
+            }
+        }
+
+        $finalPrice = $subTotal - $discount;
+        if ($finalPrice < 0) $finalPrice = 0;
+
         $booking = Booking::create([
             'user_id'      => auth()->id(),
             'schedule_id'  => $schedule->id,
+            'promo_id'     => $request->promo_id,
             'booking_code' => (string) Str::uuid(),
-            'total_price'  => $ticketTotal + $snackTotal,
+            'total_price'  => $finalPrice,
             'status'       => 'pending',
         ]);
 
@@ -89,8 +124,15 @@ class BookingController extends Controller
             foreach ($request->snacks as $snackId => $qty) {
                 if ($qty > 0) {
                     $booking->snacks()->attach($snackId, ['quantity' => $qty]);
+                    Snack::where('id', $snackId)->decrement('stock', $qty);
                 }
             }
+        }
+        if ($request->filled('promo_id') && $discount > 0) {
+            DB::table('claimed_promos')
+                ->where('user_id', auth()->id())
+                ->where('promo_id', $request->promo_id)
+                ->delete();
         }
 
         return redirect()->route('bookings.index')->with('success', 'Booking created successfully!');
@@ -158,7 +200,7 @@ class BookingController extends Controller
         if ($booking->status === 'paid') {
             return redirect()->route('bookings.index')->with('success', 'Payment successful!');
         }
-
+        
         return view('bookings.payment-qr', compact('booking'));
     }
 
@@ -228,7 +270,6 @@ class BookingController extends Controller
             return response()->json([
                 'redirect' => route('bookings.qr', $booking->id)
             ]);
-
         } catch (\Illuminate\Validation\ValidationException $e) {
             return response()->json(['error' => 'Validation: ' . collect($e->errors())->flatten()->implode(', ')], 422);
         } catch (\Exception $e) {
