@@ -28,13 +28,36 @@
                 let result = await response.json();
                 
                 if (response.ok && result.success) {
-                    alert('🎉 ' + result.message);
+                    Swal.fire({
+                    icon: 'success',
+                    title: 'Promo Claimed!',
+                    text: result.message,
+                    background: '#1B3C53',
+                    color: '#fff',
+                    confirmButtonColor: '#D2C1B6'
+                });
+
+this.openModal = false;
                     this.openModal = false;
                 } else {
-                    alert('⚠️ ' + result.message);
+                    Swal.fire({
+                    icon: 'warning',
+                    title: 'Oops',
+                    text: result.message,
+                    background: '#1B3C53',
+                    color: '#fff',
+                    confirmButtonColor: '#D2C1B6'
+                });
                 }
             } catch (error) {
-                alert('⚠️ Something went wrong. Please check your connection.');
+                Swal.fire({
+                icon: 'error',
+                title: 'Connection Error',
+                text: 'Please try again later.',
+                background: '#1B3C53',
+                color: '#fff',
+                confirmButtonColor: '#D2C1B6'
+            });
             } finally {
                 this.isClaiming = false;
             }
@@ -76,7 +99,19 @@
                         </div>
                         @endif
 
-                        <div class="absolute inset-0 bg-black/40 opacity-0 group-hover:opacity-100 transition-opacity duration-300 flex items-center justify-center z-10">
+                        <div class="absolute top-3 right-3 z-20">
+                            @if($promo->is_active && now()->lte($promo->end_date))
+                            <span class="bg-green-500/20 text-green-300 px-3 py-1 rounded-full text-[10px] font-bold uppercase">
+                                Active
+                            </span>
+                            @else
+                            <span class="bg-red-500/20 text-red-300 px-3 py-1 rounded-full text-[10px] font-bold uppercase">
+                                Expired
+                            </span>
+                            @endif
+                        </div>
+
+                        <div class="absolute inset-0 bg-gradient-to-t from-black/80 via-black/20 to-transparent opacity-0 group-hover:opacity-100 transition duration-300 flex items-center justify-center z-10">
                             <span class="rounded-xl bg-white/10 backdrop-blur-md px-4 py-2 text-xs font-bold text-white border border-white/10 tracking-wide transform translate-y-2 group-hover:translate-y-0 transition duration-300">
                                 View Promo Details
                             </span>
@@ -87,6 +122,21 @@
                         <h3 class="text-lg font-bold line-clamp-1 text-white">
                             {{ $promo->title }}
                         </h3>
+                        <div class="mt-2 flex gap-2">
+                            @if($promo->type == 'discount')
+                            <span class="px-2 py-1 rounded-full bg-blue-500/20 text-blue-300 text-[10px] font-bold uppercase">
+                                Discount
+                            </span>
+                            @elseif($promo->type == 'buy_1_get_1')
+                            <span class="px-2 py-1 rounded-full bg-purple-500/20 text-purple-300 text-[10px] font-bold uppercase">
+                                Buy 1 Get 1
+                            </span>
+                            @else
+                            <span class="px-2 py-1 rounded-full bg-amber-500/20 text-amber-300 text-[10px] font-bold uppercase">
+                                Free Reward
+                            </span>
+                            @endif
+                        </div>
                         <p class="mt-1 text-xs text-[#D2C1B6] font-medium">
                             Period: {{ \Carbon\Carbon::parse($promo->start_date)->format('d M') }} - {{ \Carbon\Carbon::parse($promo->end_date)->format('d M Y') }}
                         </p>
@@ -105,9 +155,18 @@
                         Details
                     </button>
 
+                    @if($promo->is_active && today()->lte($promo->end_date))
                     <button @click="claimPromo({{ $promo->id }})" :disabled="isClaiming" class="w-full rounded-xl bg-[#D2C1B6] py-2.5 text-center text-xs font-bold text-[#1B3C53] transition hover:opacity-90 uppercase tracking-wide disabled:opacity-50">
+
                         <span x-text="isClaiming ? 'Claiming...' : 'Claim Promo'"></span>
                     </button>
+
+                    @else
+                    <button disabled class="w-full rounded-xl bg-gray-600 py-2.5 text-xs font-bold text-gray-300 cursor-not-allowed uppercase">
+                        Expired
+                    </button>
+
+                    @endif
                 </div>
 
             </div>
@@ -192,6 +251,8 @@
         </div>
     </div>
 </div>
+
+<script src="https://cdn.jsdelivr.net/npm/sweetalert2@11"></script>
 
 <style>
     .custom-scrollbar::-webkit-scrollbar {

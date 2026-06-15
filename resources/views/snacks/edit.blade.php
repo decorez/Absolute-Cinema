@@ -18,7 +18,7 @@
             </label>
             <input type="text" name="name" value="{{ $snack->name }}" class="w-full rounded-xl bg-white/5 border border-white/10 p-3 text-white focus:outline-none focus:border-[#D2C1B6]">
         </div>
-        
+
         <div class="mb-5">
             <label class="mb-2 block text-xs font-bold uppercase tracking-wider text-[#D2C1B6]">
                 Category
@@ -26,11 +26,20 @@
 
             <select
                 name="category"
-                class="w-full rounded-xl bg-[#234C6A] border border-white/10 p-3 text-white focus:outline-none focus:border-[#D2C1B6]"            >
+                class="w-full rounded-xl bg-[#234C6A] border border-white/10 p-3 text-white focus:outline-none focus:border-[#D2C1B6]">
                 <option value="">Select Category</option>
-                <option value="Popcorn">Popcorn</option>
-                <option value="Beverage">Beverage</option>
-                <option value="Sides">Sides</option>
+                <option value="Popcorn"
+                    {{ $snack->category == 'Popcorn' ? 'selected' : '' }}>
+                    Popcorn
+                </option>
+                <option value="Beverage"
+                    {{ $snack->category == 'Beverage' ? 'selected' : '' }}>
+                    Beverage
+                </option>
+                <option value="Sides"
+                    {{ $snack->category == 'Sides' ? 'selected' : '' }}>
+                    Sides
+                </option>
             </select>
         </div>
 
@@ -38,11 +47,11 @@
             <label class="mb-2 block text-xs font-bold uppercase tracking-wider text-[#D2C1B6]">
                 Snack Image
             </label>
-            
+
             @if($snack->image)
-                <div class="mb-3">
-                    <img src="{{ asset('storage/' . $snack->image) }}" class="w-20 h-20 object-cover rounded-xl border border-white/10">
-                </div>
+            <div class="mb-3">
+                <img src="{{ asset('storage/' . $snack->image) }}" class="w-20 h-20 object-cover rounded-xl border border-white/10">
+            </div>
             @endif
 
             <input type="file" name="image" class="w-full rounded-xl bg-white/5 border border-white/10 p-3 text-white focus:outline-none focus:border-[#D2C1B6] file:mr-4 file:py-1 file:px-3 file:rounded-xl file:border-0 file:text-xs file:font-bold file:bg-[#D2C1B6] file:text-[#1B3C53] hover:file:bg-white transition">

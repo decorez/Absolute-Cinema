@@ -3,7 +3,9 @@
 @section('title', 'Add Promo')
 
 @section('content')
-<div class="max-w-2xl bg-white/5 border border-white/10 rounded-2xl p-8 backdrop-blur-sm text-white">
+<div class="max-w-2xl bg-white/5 border border-white/10 rounded-2xl p-8 backdrop-blur-sm text-white" 
+     x-data="{ promoType: '{{ old('type', 'discount') }}' }">
+     
     <h3 class="mb-6 text-2xl font-bold tracking-tight text-white">
         Add New Promo
     </h3>
@@ -26,6 +28,27 @@
                 Promo Title
             </label>
             <input type="text" name="title" value="{{ old('title') }}" required class="w-full rounded-xl bg-white/5 border border-white/10 p-3 text-white focus:outline-none focus:border-[#D2C1B6]">
+        </div>
+
+        <div class="mb-5">
+            <label class="mb-2 block text-xs font-bold uppercase tracking-wider text-[#D2C1B6]">
+                Promo Type
+            </label>
+            <select name="type" 
+                    x-model="promoType"
+                    required
+                    class="w-full rounded-xl bg-white/5 border border-white/10 p-3 text-white text-sm focus:outline-none focus:border-[#D2C1B6] appearance-none cursor-pointer">
+                <option value="discount" class="bg-[#1B3C53]">Cash Discount (Cut Total Price)</option>
+                <option value="buy_1_get_1" class="bg-[#1B3C53]">Buy 1 Get 1 Free Ticket</option>
+                <option value="free_item" class="bg-[#1B3C53]">Free Item</option>
+            </select>
+        </div>
+
+        <div class="mb-5" x-show="promoType === 'discount'" x-transition:enter="transition ease-out duration-200" x-transition:enter-start="opacity-0 transform -translate-y-2">
+            <label class="mb-2 block text-xs font-bold uppercase tracking-wider text-[#D2C1B6]">
+                Discount Value (Rp)
+            </label>
+            <input type="number" name="value" value="{{ old('value', 0) }}" min="0" class="w-full rounded-xl bg-white/5 border border-white/10 p-3 text-white text-sm focus:outline-none focus:border-[#D2C1B6]">
         </div>
 
         <div class="mb-5">

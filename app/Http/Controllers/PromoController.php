@@ -17,7 +17,7 @@ class PromoController extends Controller
      */
     public function index()
     {
-        $promos = Promo::where('is_active', true)->where('start_date', '<=', now())->where('end_date', '>=', now())->latest()->get();
+        $promos = Promo::where('is_active', true)->whereDate('start_date', '<=', now())->whereDate('end_date', '>=', now())->latest()->get();
         return view('promos.all', compact('promos'));
     }
 
@@ -39,7 +39,7 @@ class PromoController extends Controller
         $user = Auth::user();
         $promo = Promo::findOrFail($id);
 
-        if (now()->gt($promo->end_date)) {
+        if (today()->gt($promo->end_date)) {
             return response()->json([
                 'success' => false,
                 'message' => 'Sorry, this promo has expired.'
@@ -86,6 +86,8 @@ class PromoController extends Controller
     {
         $input = $request->validate([
             'title' => 'required|string|max:255',
+            'type' => 'required|string|in:discount,buy_1_get_1,free_item',
+            'value' => 'nullable|integer|min:0',
             'description' => 'required',
             'image' => 'nullable|image|mimes:jpeg,png,jpg,webp|max:2048',
             'start_date' => 'required|date',
@@ -96,7 +98,7 @@ class PromoController extends Controller
             $input['image'] = $request->file('image')->store('promos', 'public');
         }
 
-        $input['is_active'] = $request->has('is_active') ? $request->is_active : true;
+        $input['is_active'] = true;
         Promo::create($input);
         return redirect()->route('promos.index')->with('success', 'Promo successfully added!');
     }
@@ -124,6 +126,8 @@ class PromoController extends Controller
     {
         $input = $request->validate([
             'title' => 'required|string|max:255',
+            'type' => 'required|string|in:discount,buy_1_get_1,free_item',
+            'value' => 'nullable|integer|min:0',
             'description' => 'required',
             'image' => 'nullable|image|mimes:jpeg,png,jpg,webp|max:2048',
             'start_date' => 'required|date',
@@ -137,7 +141,7 @@ class PromoController extends Controller
             $input['image'] = $request->file('image')->store('promos', 'public');
         }
 
-        $input['is_active'] = $request->has('is_active');
+        $input['is_active'] = true;
         $promo->update($input);
         return redirect()->route('promos.index')->with('success', 'Promo successfully updated!');
     }

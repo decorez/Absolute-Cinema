@@ -66,7 +66,7 @@
 
                             @if($booking->status === 'pending')
 
-                                <a href="{{ route('bookings.qr', $booking->id) }}"
+                                <a href="{{ route('bookings.checkout-promo', $booking->id) }}"
                                    class="bg-[#D2C1B6] text-[#1B3C53] px-4 py-1.5 rounded-lg text-xs font-bold hover:scale-105 transition uppercase">
                                     Pay Now
                                 </a>

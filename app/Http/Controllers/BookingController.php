@@ -193,6 +193,42 @@ class BookingController extends Controller
             ->with('success', 'Booking approved successfully!');
     }
 
+    public function checkoutPromo(Booking $booking)
+    {
+        if ($booking->user_id !== auth()->id() || $booking->status !== 'pending') {
+            return redirect()->route('bookings.index');
+        }
+        $booking->load(['schedule.movie', 'bookingDetails.seat']);
+        $availablePromos = DB::table('claimed_promos')
+            ->join('promos', 'claimed_promos.promo_id', '=', 'promos.id')
+            ->where('claimed_promos.user_id', auth()->id())
+            ->where('promos.end_date', '>=', now())
+            ->select('promos.*')
+            ->get();
+
+        return view('bookings.checkout-promo', compact('booking', 'availablePromos'));
+    }
+
+    public function processToQr(Request $request, Booking $booking)
+    {
+        if ($booking->user_id !== auth()->id() || $booking->status !== 'pending') {
+            return redirect()->route('bookings.index');
+        }
+        $finalTotal = $request->input('final_total', $booking->total_price);
+        $booking->update([
+            'total_price' => $finalTotal,
+            'promo_id'    => $request->filled('promo_id') ? $request->promo_id : null,
+        ]);
+
+        if ($request->filled('promo_id')) {
+            DB::table('claimed_promos')
+                ->where('user_id', auth()->id())
+                ->where('promo_id', $request->promo_id)
+                ->delete();
+        }
+        return redirect()->route('bookings.qr', $booking->id);
+    }
+
     public function showPaymentQr(Booking $booking)
     {
         $booking->refresh();

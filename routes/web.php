@@ -44,6 +44,9 @@ Route::middleware('auth')->group(function () {
     Route::delete('/bookings/{booking}', [BookingController::class, 'destroy'])->name('bookings.destroy');
     Route::post('/bookings/{booking}/pay', [BookingController::class, 'pay'])->name('bookings.pay');
 
+    Route::get('/bookings/{booking}/checkout-promo', [BookingController::class, 'checkoutPromo'])->name('bookings.checkout-promo');
+    Route::post('/bookings/{booking}/process-to-qr', [BookingController::class, 'processToQr'])->name('bookings.process-to-qr');
+
     Route::post('/promos/{id}/claim', [PromoController::class, 'claim'])->name('promos.claim');
 });
 
