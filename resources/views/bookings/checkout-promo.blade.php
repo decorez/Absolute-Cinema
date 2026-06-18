@@ -55,22 +55,95 @@
 
         <div class="bg-white/5 rounded-2xl p-4 mb-5 border border-white/5">
             @if($booking->schedule && $booking->schedule->movie)
-            <h2 class="text-lg font-black tracking-tight text-[#D2C1B6] uppercase">
-                {{ $booking->schedule->movie->title }}
-            </h2>
-            <p class="text-xs text-gray-400 mt-1">Studio 2, 2D</p>
-            <p class="text-xs text-gray-300 mt-0.5">
-                🗓️ {{ \Carbon\Carbon::parse($booking->schedule->show_date)->format('D, d M Y') }} | {{ $booking->schedule->show_time }}
-            </p>
-            <div class="mt-3 flex flex-wrap gap-1">
-                <span class="text-xs bg-white/10 px-2 py-0.5 rounded text-gray-400 font-bold">Tickets ({{ $booking->bookingDetails->count() }}):</span>
-                @foreach($booking->bookingDetails as $detail)
-                <span class="text-xs bg-[#D2C1B6]/20 border border-amber-500/30 text-[#D2C1B6] px-2 py-0.5 rounded font-mono font-bold">
-                    {{ optional($detail->seat)->seat_number }}
-                </span>
-                @endforeach
-            </div>
+
+                <h2 class="text-lg font-black tracking-tight text-[#D2C1B6] uppercase">
+                    {{ $booking->schedule->movie->title }}
+                </h2>
+
+                <p class="text-xs text-gray-400 mt-1">
+                    Studio 2, 2D
+                </p>
+
+                <p class="text-xs text-gray-300 mt-0.5">
+                    🗓️ {{ \Carbon\Carbon::parse($booking->schedule->show_date)->format('D, d M Y') }}
+                    |
+                    {{ $booking->schedule->show_time }}
+                </p>
+
+                @if($booking->bookingDetails->count())
+
+                    <div class="mt-3 flex flex-wrap gap-1">
+
+                        <span class="text-xs bg-white/10 px-2 py-0.5 rounded text-gray-400 font-bold">
+                            Tickets ({{ $booking->bookingDetails->count() }}):
+                        </span>
+
+                        @foreach($booking->bookingDetails as $detail)
+
+                            <span class="text-xs bg-[#D2C1B6]/20 border border-amber-500/30 text-[#D2C1B6] px-2 py-0.5 rounded font-mono font-bold">
+                                {{ optional($detail->seat)->seat_number }}
+                            </span>
+
+                        @endforeach
+
+                    </div>
+
+                @endif
+
+            @else
+
+                <h2 class="text-lg font-black tracking-tight text-[#D2C1B6] uppercase">
+                    Snack Order
+                </h2>
+
             @endif
+
+            @php
+                $orderedSnacks = $booking->getRelation('snacks');
+            @endphp
+
+            @if($orderedSnacks && $orderedSnacks->count())
+
+                <div class="mt-4 border-t border-white/10 pt-3">
+
+                    <p class="text-xs text-gray-400 uppercase font-bold mb-3">
+                        Ordered Snacks
+                    </p>
+
+                    @foreach($orderedSnacks as $snack)
+
+                        <div class="flex justify-between items-center bg-white/5 rounded-lg px-3 py-2 mb-2">
+
+                            <div>
+                                <p class="text-white font-bold">
+                                    {{ $snack->name }}
+                                </p>
+
+                                <p class="text-xs text-gray-400">
+                                    {{ $snack->category }}
+                                </p>
+                            </div>
+
+                            <div class="text-right">
+
+                                <p class="text-[#D2C1B6] font-bold">
+                                    x{{ $snack->pivot->quantity }}
+                                </p>
+
+                                <p class="text-xs text-gray-400">
+                                    Rp {{ number_format($snack->price * $snack->pivot->quantity,0,',','.') }}
+                                </p>
+
+                            </div>
+
+                        </div>
+
+                    @endforeach
+
+                </div>
+
+            @endif
+
         </div>
 
         <form action="{{ route('bookings.process-to-qr', $booking->id) }}" method="POST">

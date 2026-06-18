@@ -198,7 +198,9 @@ class BookingController extends Controller
         if ($booking->user_id !== auth()->id() || $booking->status !== 'pending') {
             return redirect()->route('bookings.index');
         }
-        $booking->load(['schedule.movie', 'bookingDetails.seat']);
+
+        $booking = Booking::with(['schedule.movie','bookingDetails.seat','snacks'])->findOrFail($booking->id);
+
         $availablePromos = DB::table('claimed_promos')
             ->join('promos', 'claimed_promos.promo_id', '=', 'promos.id')
             ->where('claimed_promos.user_id', auth()->id())
@@ -206,7 +208,10 @@ class BookingController extends Controller
             ->select('promos.*')
             ->get();
 
-        return view('bookings.checkout-promo', compact('booking', 'availablePromos'));
+        return view('bookings.checkout-promo', [
+            'booking' => $booking,
+            'availablePromos' => $availablePromos,
+        ]);
     }
 
     public function processToQr(Request $request, Booking $booking)
@@ -304,7 +309,7 @@ class BookingController extends Controller
             }
 
             return response()->json([
-                'redirect' => route('bookings.qr', $booking->id)
+                'redirect' => route('bookings.checkout-promo', $booking->id)
             ]);
         } catch (\Illuminate\Validation\ValidationException $e) {
             return response()->json(['error' => 'Validation: ' . collect($e->errors())->flatten()->implode(', ')], 422);

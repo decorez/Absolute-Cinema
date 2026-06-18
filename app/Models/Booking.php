@@ -6,6 +6,7 @@ use Illuminate\Database\Eloquent\Model;
 use App\Models\User;
 use App\Models\Schedule;
 use App\Models\BookingDetail;
+use App\Models\Snack;
 
 class Booking extends Model
 {

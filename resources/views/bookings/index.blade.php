@@ -32,25 +32,60 @@
                                 {{ $booking->schedule->show_time }}
                             </p>
 
-                            @if($booking->bookingDetails->count())
+                            @if($booking->bookingDetails && $booking->bookingDetails->count())
+
                                 <div class="mt-2">
+
                                     @foreach($booking->bookingDetails as $detail)
+
                                         <span class="bg-white/10 px-2 py-1 rounded text-xs mr-1 text-white">
                                             {{ optional($detail->seat)->seat_number }}
                                         </span>
+
                                     @endforeach
+
                                 </div>
+
+                            @endif
+
+                            @if($booking->snacks && $booking->snacks->count())
+
+                                <div class="mt-3">
+
+                                    @foreach($booking->snacks as $snack)
+
+                                        <span class="bg-white/10 px-2 py-1 rounded text-xs mr-1 text-white inline-block mb-1">
+                                            {{ $snack->name }} x{{ $snack->pivot->quantity }}
+                                        </span>
+
+                                    @endforeach
+
+                                </div>
+
                             @endif
 
                         @else
 
                             <h3 class="text-xl font-bold text-white">
-                                Booking #{{ $booking->id }}
+                                Snack Order
                             </h3>
 
-                            <p class="text-[#D2C1B6] text-sm">
-                                No schedule attached
-                            </p>
+
+                            @if($booking->snacks && $booking->snacks->count())
+
+                                <div class="mt-2">
+
+                                    @foreach($booking->snacks as $snack)
+
+                                        <span class="bg-white/10 px-2 py-1 rounded text-xs mr-1 text-white inline-block mb-1">
+                                            {{ $snack->name }} x{{ $snack->pivot->quantity }}
+                                        </span>
+
+                                    @endforeach
+
+                                </div>
+
+                            @endif
 
                         @endif
 
