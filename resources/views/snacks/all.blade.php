@@ -3,9 +3,17 @@
 @section('content')
 <div class="min-h-screen text-white bg-gradient-to-br from-[#1B3C53] via-[#234C6A] to-[#456882]">
 
-    <header class="max-w-6xl mx-auto pt-12 pb-6 px-6 text-center">
-        <h1 class="text-3xl font-extrabold mb-2">Concession & Snacks</h1>
-        <p class="text-sm text-[#D2C1B6]">Select your snacks</p>
+    <header class="max-w-6xl mx-auto pt-12 pb-6 px-6">
+
+        <a href="{{ url('/') }}" class="text-xs text-[#D2C1B6] hover:text-white flex items-center gap-1 mb-2 transition">
+            ← Back to Home
+        </a>
+
+        <div class="text-center">
+            <h1 class="text-3xl font-extrabold mb-2">Concession & Snacks</h1>
+            <p class="text-sm text-[#D2C1B6]">Select your snacks</p>
+        </div>
+
     </header>
 
 

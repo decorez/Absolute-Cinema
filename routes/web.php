@@ -1,6 +1,6 @@
 <?php
 
-use Illuminate\Support\Facades\Route;
+use Illuminate\Http\Request;
 
 use App\Http\Controllers\ProfileController;
 use App\Http\Controllers\MovieController;
@@ -92,5 +92,34 @@ Route::get('/bookings/{booking}/payment-qr', [BookingController::class, 'showPay
 Route::post('/checkout/snacks', [BookingController::class, 'snackCheckout'])
     ->middleware('auth')
     ->name('snacks.checkout');
+
+Route::get('/search', function (Request $request) {
+
+    $search = $request->search;
+
+    $movies = Movie::where('title', 'like', "%{$search}%")
+        ->orWhere('genre', 'like', "%{$search}%")
+        ->get();
+
+    return view('movies.search', compact('movies', 'search'));
+
+})->name('movies.search');
+
+Route::get('/live-search', function (Request $request) {
+
+    $search = $request->input('search');
+
+    if (!$search) {
+        return response()->json([]);
+    }
+
+    $movies = Movie::where('title', 'like', "%{$search}%")
+        ->orWhere('genre', 'like', "%{$search}%")
+        ->limit(5)
+        ->get();
+
+    return response()->json($movies);
+
+})->name('movies.live-search');
 
 require __DIR__.'/auth.php';

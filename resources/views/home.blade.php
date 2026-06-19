@@ -110,12 +110,35 @@
         </div>
 
         <div class="w-full max-w-2xl relative mb-10">
-            <span class="absolute inset-y-0 left-4 flex items-center pl-1 pointer-events-none">
-                <svg class="w-5 h-5 text-[#D2C1B6]" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                    <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2.5" d="M21 21l-6-6m2-5a7 7 0 11-14 0 7 7 0 0114 0z"></path>
-                </svg>
-            </span>
-            <input type="text" placeholder="Search for movies or cinemas..." class="w-full pl-12 pr-4 py-3 bg-[#1B3C53]/40 border border-white/10 rounded-full text-sm text-white placeholder-white/40 focus:outline-none focus:border-[#D2C1B6] focus:ring-1 focus:ring-[#D2C1B6] backdrop-blur-md shadow-lg transition duration-300" />
+
+            <form action="{{ route('movies.search') }}" method="GET">
+
+                <div class="w-full max-w-2xl relative mb-10">
+                    <span class="absolute inset-y-0 left-4 flex items-center pl-1 pointer-events-none">
+                        <svg class="w-5 h-5 text-[#D2C1B6]" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2.5" d="M21 21l-6-6m2-5a7 7 0 11-14 0 7 7 0 0114 0z"></path>
+                        </svg>
+                    </span>
+
+                    <input
+                        id="search"
+                        name="search"
+                        type="text"
+                        placeholder="Search movies..."
+                        autocomplete="off"
+                        class="w-full pl-12 pr-4 py-3 bg-[#1B3C53]/40 border border-white/10 rounded-full text-white"
+                    >
+
+                    <div
+                        id="searchResults"
+                        class="absolute top-16 left-0 w-full bg-[#1B3C53] rounded-xl hidden z-50 shadow-lg border border-white/10"
+                    >
+                    </div>
+
+                </div>
+
+            </form>  
+        
         </div>
 
         <div class="grid grid-cols-3 gap-4 sm:gap-10 max-w-md w-full text-center">
@@ -313,6 +336,76 @@
                 }
             }
         });
+    });
+
+    const search = document.getElementById('search');
+
+    const results = document.getElementById('searchResults');
+
+
+    search.addEventListener('keyup', async function(){
+
+        let keyword = this.value;
+
+        if(keyword.length < 2){
+
+            results.classList.add('hidden');
+
+            results.innerHTML = '';
+
+            return;
+        }
+
+        const response = await fetch(
+            `/live-search?search=${keyword}`
+        );
+
+        const movies = await response.json();
+
+        results.innerHTML = '';
+
+        if(movies.length === 0){
+
+            results.innerHTML = `
+                <div class="p-4 text-gray-300">
+                    No results found
+                </div>
+            `;
+
+            results.classList.remove('hidden');
+
+            return;
+        }
+
+        movies.forEach(movie => {
+
+            results.innerHTML += `
+
+            <a
+                href="/movies/${movie.id}"
+                class="block p-4 hover:bg-[#456882]"
+            >
+
+                <div class="font-bold">
+
+                    ${movie.title}
+
+                </div>
+
+                <div class="text-sm text-gray-300">
+
+                    ${movie.genre}
+
+                </div>
+
+            </a>
+
+            `;
+
+        });
+
+        results.classList.remove('hidden');
+
     });
 </script>
 
