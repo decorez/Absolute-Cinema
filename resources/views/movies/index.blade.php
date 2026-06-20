@@ -38,7 +38,7 @@
                 <tr class="hover:bg-white/5 transition">
                     <td class="px-6 py-4">
                         @if($movie->poster)
-                            <img src="{{ asset('storage/' . $movie->poster) }}" class="h-24 w-16 rounded-xl object-cover border border-white/10">
+                            <img src="{{ $movie->poster }}" alt="{{ $movie->title }}" class="h-24 w-16 rounded-xl object-cover border border-white/10">
                         @else
                             <div class="flex h-24 w-16 items-center justify-center rounded-xl bg-white/5 border border-dashed border-white/10 text-[10px] text-[#D2C1B6]/60 font-medium">
                                 No Image

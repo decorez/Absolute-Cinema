@@ -22,7 +22,7 @@ class MovieController extends Controller
     }
 
     public function store(Request $request, CloudinaryService $cloudinary)
-    {
+    {   
         $input = $request->validate([
             'title' => 'required',
             'description' => 'required',
@@ -32,13 +32,22 @@ class MovieController extends Controller
             'poster' => 'nullable|image|mimes:jpeg,png,jpg|max:2048'
         ]);
 
+        $input['poster'] = null;
+
         if ($request->hasFile('poster')) {
 
-            $filePath = $request->file('poster')->getRealPath();
+            $file = $request->file('poster');
 
-            $uploaded = $cloudinary->uploadImage($filePath, 'movies');
+            $uploaded = $cloudinary->uploadImage($file->getRealPath(), 'movies');
 
-            $input['poster'] = $uploaded['public_id'];
+            dd($uploaded);
+
+
+            if (!isset($uploaded['secure_url'])) {
+                throw new \Exception('Cloudinary upload failed');
+            }
+
+            $input['poster'] = $uploaded['secure_url'];
         }
 
         Movie::create($input);
@@ -67,12 +76,16 @@ class MovieController extends Controller
 
         if ($request->hasFile('poster')) {
 
-            $filePath = $request->file('poster')->getRealPath();
+            $file = $request->file('poster');
 
             $uploaded = app(CloudinaryService::class)
-                ->uploadImage($filePath, 'movies');
+                ->uploadImage($file->getRealPath(), 'movies');
 
-            $poster = $uploaded['public_id'];
+            if (!isset($uploaded['secure_url'])) {
+                throw new \Exception('Cloudinary upload failed');
+            }
+
+            $poster = $uploaded['secure_url'];
         }
 
         $movie->update([
@@ -90,7 +103,6 @@ class MovieController extends Controller
 
     public function destroy(Movie $movie)
     {
-        // Cloudinary delete can be added later using public_id
 
         $movie->delete();
 

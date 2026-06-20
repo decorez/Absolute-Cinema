@@ -131,4 +131,12 @@ Route::get('/generate-storage-link', function () {
     return 'Storage link created successfully!';
 });
 
+Route::get('/cloudinary-test', function () {
+    return response()->json([
+        'cloud_name' => env('CLOUDINARY_CLOUD_NAME'),
+        'api_key_exists' => !empty(env('CLOUDINARY_API_KEY')),
+        'api_secret_exists' => !empty(env('CLOUDINARY_API_SECRET')),
+    ]);
+});
+
 require __DIR__.'/auth.php';

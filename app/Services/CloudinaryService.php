@@ -12,9 +12,9 @@ class CloudinaryService
     {
         $this->cloudinary = new Cloudinary([
             'cloud' => [
-                'cloud_name' => env('dym4cgp5g'),
-                'api_key'    => env('136188877635917'),
-                'api_secret' => env('C_fXQ4qNRfmI7HwBVlbRxkhQgW8'),
+                'cloud_name' => config('cloudinary.cloud_name'),
+                'api_key'    => config('cloudinary.api_key'),
+                'api_secret' => config('cloudinary.api_secret'),
             ],
             'url' => [
                 'secure' => true
@@ -22,7 +22,7 @@ class CloudinaryService
         ]);
     }
 
-    public function uploadImage($filePath, $folder = 'absolute-cinema')
+    public function uploadImage($filePath, $folder = 'movies')
     {
         return $this->cloudinary->uploadApi()->upload($filePath, [
             'folder' => $folder

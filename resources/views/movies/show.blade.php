@@ -19,7 +19,7 @@
                 
                 <div class="w-full sm:w-44 aspect-[2/3] bg-[#234C6A]/80 rounded-2xl overflow-hidden border border-white/10 flex-shrink-0">
                     @if($movie->poster)
-                        <img src="{{ asset('storage/' . $movie->poster) }}" alt="{{ $movie->title }}" class="w-full h-full object-cover">
+                        <img src="{{ $movie->poster }}" alt="{{ $movie->title }}" alt="{{ $movie->title }}" class="w-full h-full object-cover">
                     @else
                         <div class="w-full h-full flex items-center justify-center text-xs text-[#D2C1B6] p-4 text-center">
                             No Poster Available

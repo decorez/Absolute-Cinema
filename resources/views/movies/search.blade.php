@@ -25,7 +25,7 @@
                     <div class="bg-white/10 rounded-xl p-4">
 
                         <img
-                            src="{{ asset('storage/'.$movie->poster) }}"
+                            src="{{ $movie->poster }}" alt="{{ $movie->title }}"
                             class="w-full h-72 object-cover rounded-lg"
                         >
 
