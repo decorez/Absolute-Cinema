@@ -1,0 +1,10 @@
+[33mc615745[m[33m ([m[1;36mHEAD -> [m[1;32mmain[m[33m, [m[1;31morigin/main[m[33m)[m Merge branch 'main' of https://github.com/decorez/Absolute-Cinema
+[33m3683ca0[m refactor asset loading in app layout to use asset() helper for CSS and JS files
+[33m8267790[m[33m ([m[1;31mclever/master[m[33m)[m Add manifest.json for asset management with CSS and JS entries
+[33mde0ccf0[m fix: simplify static asset names to app.css and app.js
+[33mfe0839e[m Refactor code structure for improved readability and maintainability
+[33mb676586[m fix: enforce HTTPS scheme in production environment
+[33m003aa13[m fix: update asset loading method in layout template
+[33mdc7b65a[m feat: complete build process configuration and asset optimization
+[33mcac58bb[m remove unused migration
+[33m32fb702[m enhance homepage and snack ui (search features, back navigation)
