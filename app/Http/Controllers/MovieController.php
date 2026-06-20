@@ -5,6 +5,7 @@ namespace App\Http\Controllers;
 use App\Models\Movie;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Storage;
+use App\Services\CloudinaryService;
 
 class MovieController extends Controller
 {
@@ -20,7 +21,7 @@ class MovieController extends Controller
         return view('movies.create');
     }
 
-    public function store(Request $request)
+    public function store(Request $request, CloudinaryService $cloudinary)
     {
         $input = $request->validate([
             'title' => 'required',
@@ -31,14 +32,19 @@ class MovieController extends Controller
             'poster' => 'nullable|image|mimes:jpeg,png,jpg|max:2048'
         ]);
 
-        $poster = null;
         if ($request->hasFile('poster')) {
-            $poster = $request->file('poster')->store('movies', 'public');
-            $input['poster'] = $poster;
+
+            $filePath = $request->file('poster')->getRealPath();
+
+            $uploaded = $cloudinary->uploadImage($filePath, 'movies');
+
+            $input['poster'] = $uploaded['public_id'];
         }
 
         Movie::create($input);
-        return redirect()->route('movies.index')->with('success', 'Movie added successfully.');
+
+        return redirect()->route('movies.index')
+            ->with('success', 'Movie added successfully.');
     }
 
     public function edit(Movie $movie)
@@ -58,12 +64,17 @@ class MovieController extends Controller
         ]);
 
         $poster = $movie->poster;
+
         if ($request->hasFile('poster')) {
-            if ($movie->poster) {
-                Storage::disk('public')->delete($movie->poster);
-            }
-            $poster = $request->file('poster')->store('movies', 'public');
+
+            $filePath = $request->file('poster')->getRealPath();
+
+            $uploaded = app(CloudinaryService::class)
+                ->uploadImage($filePath, 'movies');
+
+            $poster = $uploaded['public_id'];
         }
+
         $movie->update([
             'title' => $input['title'],
             'description' => $input['description'],
@@ -72,17 +83,19 @@ class MovieController extends Controller
             'release_date' => $input['release_date'],
             'poster' => $poster
         ]);
-        return redirect()->route('movies.index')->with('success', 'Movie updated successfully.');
+
+        return redirect()->route('movies.index')
+            ->with('success', 'Movie updated successfully.');
     }
 
     public function destroy(Movie $movie)
     {
-        if ($movie->poster) {
-            Storage::disk('public')->delete($movie->poster);
-        }
+        // Cloudinary delete can be added later using public_id
 
         $movie->delete();
-        return redirect()->route('movies.index')->with('success', 'Movie deleted successfully.');
+
+        return redirect()->route('movies.index')
+            ->with('success', 'Movie deleted successfully.');
     }
 
     public function show(Movie $movie)
