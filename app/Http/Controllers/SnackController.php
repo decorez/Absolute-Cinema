@@ -4,6 +4,7 @@ namespace App\Http\Controllers;
 
 use App\Models\Snack;
 use Illuminate\Http\Request;
+use App\Services\CloudinaryService;
 
 class SnackController extends Controller
 {
@@ -49,12 +50,18 @@ class SnackController extends Controller
         ]);
 
         if ($request->hasFile('image')) {
-            $imagePath = $request->file('image')->store('snacks', 'public');
-            $validated['image'] = $imagePath;
+            $file = $request->file('image');
+
+            $uploaded = app(\App\Services\CloudinaryService::class)
+                ->uploadImage($file->getRealPath(), 'snacks');
+
+            $validated['image'] = $uploaded['secure_url'];
         }
 
         Snack::create($validated);
-        return redirect()->route('snacks.admin')->with('success', 'Snack added successfully.');
+
+        return redirect()->route('snacks.admin')
+            ->with('success', 'Snack added successfully.');
     }
 
     /**
@@ -87,14 +94,17 @@ class SnackController extends Controller
         ]);
 
         if ($request->hasFile('image')) {
-            $validated['image'] = $request->file('image')
-                ->store('snacks', 'public');
+            $file = $request->file('image');
+
+            $uploaded = app(\App\Services\CloudinaryService::class)
+                ->uploadImage($file->getRealPath(), 'snacks');
+
+            $validated['image'] = $uploaded['secure_url'];
         }
 
         $snack->update($validated);
 
-        return redirect()
-            ->route('snacks.admin')
+        return redirect()->route('snacks.admin')
             ->with('success', 'Snack updated successfully.');
     }
 

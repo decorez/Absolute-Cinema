@@ -41,7 +41,7 @@
                     <td class="px-6 py-4">
                         @if($snack->image)
                             <img
-                                src="{{ asset('storage/' . $snack->image) }}"
+                                src="{{ $snack->image }}" alt="{{ $snack->name }}"
                                 alt="{{ $snack->name }}"
                                 class="w-20 h-20 object-cover rounded-xl border border-white/10"
                             >

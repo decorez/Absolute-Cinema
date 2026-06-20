@@ -50,7 +50,7 @@
 
             @if($snack->image)
             <div class="mb-3">
-                <img src="{{ asset('storage/' . $snack->image) }}" class="w-20 h-20 object-cover rounded-xl border border-white/10">
+                <img src="{{ $snack->image }}" alt="{{ $snack->name }}" class="w-20 h-20 object-cover rounded-xl border border-white/10">
             </div>
             @endif
 

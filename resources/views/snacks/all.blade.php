@@ -56,7 +56,7 @@
 
                 <div class="aspect-square bg-[#1B3C53] rounded-xl flex items-center justify-center mb-3 overflow-hidden">
                     @if($snack->image)
-                    <img src="{{ asset('storage/' . $snack->image) }}" class="w-full h-full object-cover">
+                    <img src="{{ $snack->image }}" alt="{{ $snack->name }}" class="w-full h-full object-cover">
                     @else
                     🍿
                     @endif
