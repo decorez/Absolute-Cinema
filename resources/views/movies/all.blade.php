@@ -22,7 +22,7 @@
                     <div>
                         <div class="overflow-hidden relative h-[380px]">
                             @if($movie->poster)
-                                <img src="{{ asset('storage/' . $movie->poster) }}" alt="{{ $movie->title }}" class="h-full w-full object-cover group-hover:scale-105 transition duration-500">
+                                <img src="{{ asset('images/movies/'.$movie->poster) }}" alt="{{ $movie->title }}" class="h-full w-full object-cover group-hover:scale-105 transition duration-500">
                             @else
                                 <div class="h-full bg-gradient-to-b from-[#456882] to-[#234C6A] flex items-center justify-center text-xs text-[#D2C1B6]">
                                     No Poster Available

@@ -33,8 +33,14 @@ class MovieController extends Controller
 
         $poster = null;
         if ($request->hasFile('poster')) {
-            $poster = $request->file('poster')->store('movies', 'public');
-            $input['poster'] = $poster;
+            $filename = time().'_'.$request->file('poster')->getClientOriginalName();
+
+            $request->file('poster')->move(
+                public_path('images/movies'),
+                $filename
+            );
+
+            $input['poster'] = $filename;
         }
 
         Movie::create($input);
