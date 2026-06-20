@@ -1,6 +1,7 @@
 <?php
 
 use Illuminate\Http\Request;
+use Illuminate\Support\Facades\Route;
 
 use App\Http\Controllers\ProfileController;
 use App\Http\Controllers\MovieController;
@@ -121,5 +122,13 @@ Route::get('/live-search', function (Request $request) {
     return response()->json($movies);
 
 })->name('movies.live-search');
+
+Route::get('/generate-storage-link', function () {
+    if (file_exists(public_path('storage'))) {
+        @unlink(public_path('storage'));
+    }
+    Illuminate\Support\Facades\Artisan::call('storage:link');
+    return 'Storage link created successfully!';
+});
 
 require __DIR__.'/auth.php';
