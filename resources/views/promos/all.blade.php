@@ -172,7 +172,7 @@ this.openModal = false;
             </div>
             @empty
             <div class="col-span-full">
-                <div class="rounded-2xl bg-white/5 border border-dashed border-white/10 p-12 text-center">
+                <div class="rounded-2xl bg-white/5 border border-dashed border-white/10 p-32 text-center">
                     <p class="text-sm text-[#D2C1B6]">No Promos Available At The Moment.</p>
                 </div>
             </div>

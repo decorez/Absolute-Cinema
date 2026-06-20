@@ -263,8 +263,8 @@
                     </div>
                 </div>
                 @empty
-                <div class="swiper-slide">
-                    <div class="rounded-2xl bg-white/5 border border-dashed border-white/10 p-10 text-center text-sm text-[#D2C1B6]">
+                <div class="swiper-slide !w-full">
+                    <div class="rounded-2xl bg-white/5 border border-dashed border-white/10 text-center text-sm text-[#D2C1B6] flex items-center justify-center w-full" style="min-height: 200px;">
                         No promotions available
                     </div>
                 </div>

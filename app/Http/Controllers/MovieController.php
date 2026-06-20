@@ -34,14 +34,10 @@ class MovieController extends Controller
 
         $input['poster'] = null;
 
-        if ($request->hasFile('poster')) {
-
-            $file = $request->file('poster');
-
-            $uploaded = $cloudinary->uploadImage($file->getRealPath(), 'movies');
-
-            dd($uploaded);
-
+        if ($request->hasFile('poster')) {  
+                $file = $request->file('poster');
+                $uploaded = $cloudinary->uploadImage($file->getRealPath(), 'movies');
+                $input['poster'] = $uploaded['secure_url'];
 
             if (!isset($uploaded['secure_url'])) {
                 throw new \Exception('Cloudinary upload failed');
