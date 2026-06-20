@@ -45,7 +45,7 @@
                 <label class="block mb-2 text-xs font-bold uppercase tracking-wider text-[#D2C1B6]">
                     Current Poster
                 </label>
-                <img src="{{ asset('images/movies/'.$movie->poster) }}" class="h-40 rounded-xl border border-white/10 object-cover">
+                <img src="{{ asset('storage/' . $movie->poster) }}" class="h-40 rounded-xl border border-white/10 object-cover">
             </div>
         </if>
         @endif
