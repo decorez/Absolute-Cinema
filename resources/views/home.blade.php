@@ -42,6 +42,11 @@
                         <p class="text-[9px] text-[#D2C1B6] uppercase font-bold tracking-wider">Signed in as</p>
                         <p class="text-xs text-white font-bold truncate">{{ auth()->user()->email }}</p>
                     </div>
+
+                    <a href="{{ route('profile.edit') }}" class="w-full text-left flex items-center gap-2 px-4 py-2.5 text-xs text-[#D2C1B6] hover:text-white hover:bg-white/10 transition font-bold">
+                        My Profile
+                    </a>
+
                     <form method="POST" action="{{ route('logout') }}" class="m-0">
                         @csrf
                         <button type="submit" class="w-full text-left flex items-center gap-2 px-4 py-2.5 text-xs text-red-400 hover:text-white hover:bg-red-500/10 transition font-bold">
