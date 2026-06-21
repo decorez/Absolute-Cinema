@@ -110,6 +110,10 @@ class MovieController extends Controller
     {
         $schedules = $movie->schedules()
             ->with('studio')
+            ->where(function($query) {
+                $query->whereDate('show_date', '>=', today());
+            })
+            ->orderBy('studio_id')
             ->orderBy('show_date')
             ->orderBy('show_time')
             ->get();

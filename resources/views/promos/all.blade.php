@@ -92,7 +92,7 @@ this.openModal = false;
                              }">
 
                         @if($promo->image)
-                        <img src="{{ $promo->image }}" alt="{{ $promo->title }} class="h-full w-full object-cover group-hover:scale-102 transition duration-500">
+                        <img src="{{ $promo->image }}" alt="{{ $promo->title }} class=" h-full w-full object-cover group-hover:scale-102 transition duration-500">
                         @else
                         <div class="h-full bg-gradient-to-br from-[#456882] to-[#234C6A] flex items-center justify-center text-xs text-[#D2C1B6]">
                             No Image Available
@@ -100,14 +100,20 @@ this.openModal = false;
                         @endif
 
                         <div class="absolute top-3 right-3 z-20">
-                            @if($promo->is_active && now()->lte($promo->end_date))
-                            <span class="bg-green-500/20 text-green-300 px-3 py-1 rounded-full text-[10px] font-bold uppercase">
-                                Active
-                            </span>
+                            @if($promo->is_active && today()->lte($promo->end_date))
+                            @auth
+                            <button @click="claimPromo({{ $promo->id }})" :disabled="isClaiming" class="w-full rounded-xl bg-[#D2C1B6] py-2.5 text-center text-xs font-bold text-[#1B3C53] transition hover:opacity-90 uppercase tracking-wide disabled:opacity-50">
+                                <span x-text="isClaiming ? 'Claiming...' : 'Claim Promo'"></span>
+                            </button>
                             @else
-                            <span class="bg-red-500/20 text-red-300 px-3 py-1 rounded-full text-[10px] font-bold uppercase">
+                            <a href="{{ route('login') }}" class="w-full rounded-xl bg-[#D2C1B6] py-2.5 text-center text-xs font-bold text-[#1B3C53] transition hover:opacity-90 uppercase tracking-wide block">
+                                Login to Claim
+                            </a>
+                            @endauth
+                            @else
+                            <button disabled class="w-full rounded-xl bg-gray-600 py-2.5 text-xs font-bold text-gray-300 cursor-not-allowed uppercase">
                                 Expired
-                            </span>
+                            </button>
                             @endif
                         </div>
 
@@ -147,7 +153,7 @@ this.openModal = false;
                     <button @click="openModal = true; activePromo = { 
                                     id: {{ $promo->id }},
                                     title: '{{ addslashes($promo->title) }}', 
-                                    image: '{{ $promo->image ? asset('storage/' . $promo->image) : '' }}',
+                                    image: '{{ $promo->image ?? '' }}',
                                     date: '{{ \Carbon\Carbon::parse($promo->start_date)->format('d M') }} - {{ \Carbon\Carbon::parse($promo->end_date)->format('d M Y') }}',
                                     desc: '{{ addslashes(str_replace(["\r", "\n"], ' ', $promo->description)) }}'
                                  }"
@@ -156,16 +162,19 @@ this.openModal = false;
                     </button>
 
                     @if($promo->is_active && today()->lte($promo->end_date))
+                    @auth
                     <button @click="claimPromo({{ $promo->id }})" :disabled="isClaiming" class="w-full rounded-xl bg-[#D2C1B6] py-2.5 text-center text-xs font-bold text-[#1B3C53] transition hover:opacity-90 uppercase tracking-wide disabled:opacity-50">
-
                         <span x-text="isClaiming ? 'Claiming...' : 'Claim Promo'"></span>
                     </button>
-
+                    @else
+                    <a href="{{ route('login') }}" class="w-full rounded-xl bg-[#D2C1B6] py-2.5 text-center text-xs font-bold text-[#1B3C53] transition hover:opacity-90 uppercase tracking-wide block">
+                        Login to Claim
+                    </a>
+                    @endauth
                     @else
                     <button disabled class="w-full rounded-xl bg-gray-600 py-2.5 text-xs font-bold text-gray-300 cursor-not-allowed uppercase">
                         Expired
                     </button>
-
                     @endif
                 </div>
 
@@ -239,11 +248,17 @@ this.openModal = false;
                         <button @click="openModal = false" class="rounded-xl bg-white/5 hover:bg-white/10 border border-white/10 px-4 py-2 text-xs font-bold text-white transition">
                             Close
                         </button>
+                        @auth
                         <button @click="claimPromo(activePromo.id)"
                             :disabled="isClaiming"
                             class="rounded-xl bg-[#D2C1B6] px-5 py-2 text-xs font-bold text-[#1B3C53] shadow-md transition duration-300 hover:bg-[#c4b1a4] active:scale-95 disabled:opacity-50">
                             <span x-text="isClaiming ? 'Claiming...' : 'Claim Promo'"></span>
                         </button>
+                        @else
+                        <a href="{{ route('login') }}" class="rounded-xl bg-[#D2C1B6] px-5 py-2 text-xs font-bold text-[#1B3C53] shadow-md transition duration-300 hover:bg-[#c4b1a4]">
+                            Login to Claim
+                        </a>
+                        @endauth
                     </div>
                 </div>
 
