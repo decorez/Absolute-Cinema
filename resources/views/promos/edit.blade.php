@@ -81,7 +81,7 @@
             @if($promo->image)
                 <div class="mb-3">
                     <p class="text-xs text-gray-400 mb-1">Current Banner:</p>
-                    <img src="{{ asset('storage/' . $promo->image) }}" alt="Current Banner" class="w-32 h-20 object-cover rounded-xl border border-white/10">
+                    <img src="{{ $promo->image }}" alt="Current Banner" class="w-32 h-20 object-cover rounded-xl border border-white/10">
                 </div>
             @endif
             <input type="file" name="image" class="w-full rounded-xl bg-white/5 border border-white/10 p-3 text-white focus:outline-none focus:border-[#D2C1B6] file:mr-4 file:py-1 file:px-3 file:rounded-xl file:border-0 file:text-xs file:font-bold file:bg-[#D2C1B6] file:text-[#1B3C53] hover:file:bg-white transition">

@@ -86,13 +86,13 @@ this.openModal = false;
                         @click="openModal = true; activePromo = { 
                                 id: {{ $promo->id }},
                                 title: '{{ addslashes($promo->title) }}', 
-                                image: '{{ $promo->image ? asset('storage/' . $promo->image) : '' }}',
+                                image: '{{ $promo->image ?? '' }}',
                                 date: '{{ \Carbon\Carbon::parse($promo->start_date)->format('d M') }} - {{ \Carbon\Carbon::parse($promo->end_date)->format('d M Y') }}',
                                 desc: '{{ addslashes(str_replace(["\r", "\n"], ' ', $promo->description)) }}'
                              }">
 
                         @if($promo->image)
-                        <img src="{{ asset('storage/' . $promo->image) }}" alt="{{ $promo->title }}" class="h-full w-full object-cover group-hover:scale-102 transition duration-500">
+                        <img src="{{ $promo->image }}" alt="{{ $promo->title }} class="h-full w-full object-cover group-hover:scale-102 transition duration-500">
                         @else
                         <div class="h-full bg-gradient-to-br from-[#456882] to-[#234C6A] flex items-center justify-center text-xs text-[#D2C1B6]">
                             No Image Available

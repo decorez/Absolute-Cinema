@@ -41,7 +41,7 @@
 
                 <td class="px-6 py-4">
                     @if($promo->image)
-                    <img src="{{ asset('storage/' . $promo->image) }}"
+                    <img src="{{ $promo->image }}"
                         alt="{{ $promo->title }}"
                         class="w-24 h-14 object-cover rounded-xl border border-white/10">
                     @else

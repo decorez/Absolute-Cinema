@@ -95,7 +95,9 @@ class PromoController extends Controller
         ]);
 
         if ($request->hasFile('image')) {
-            $input['image'] = $request->file('image')->store('promos', 'public');
+            $cloudinary = app(\App\Services\CloudinaryService::class);
+            $uploaded = $cloudinary->uploadImage($request->file('image')->getRealPath(), 'promos');
+            $input['image'] = $uploaded['secure_url'];
         }
 
         $input['is_active'] = true;
@@ -135,10 +137,9 @@ class PromoController extends Controller
         ]);
 
         if ($request->hasFile('image')) {
-            if ($promo->image) {
-                Storage::disk('public')->delete($promo->image);
-            }
-            $input['image'] = $request->file('image')->store('promos', 'public');
+            $cloudinary = app(\App\Services\CloudinaryService::class);
+            $uploaded = $cloudinary->uploadImage($request->file('image')->getRealPath(), 'promos');
+            $input['image'] = $uploaded['secure_url'];
         }
 
         $input['is_active'] = true;
@@ -154,7 +155,7 @@ class PromoController extends Controller
         if ($promo->image) {
             Storage::disk('public')->delete($promo->image);
         }
-        
+
         $promo->delete();
         return redirect()->route('promos.index')->with('success', 'Promo successfully deleted!');
     }

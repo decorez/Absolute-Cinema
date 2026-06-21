@@ -47,6 +47,7 @@ Route::middleware('auth')->group(function () {
 
     Route::get('/bookings/{booking}/checkout-promo', [BookingController::class, 'checkoutPromo'])->name('bookings.checkout-promo');
     Route::post('/bookings/{booking}/process-to-qr', [BookingController::class, 'processToQr'])->name('bookings.process-to-qr');
+    Route::get('/bookings/{booking}/ticket', [BookingController::class, 'printTicket'])->name('bookings.ticket');
 
     Route::post('/promos/{id}/claim', [PromoController::class, 'claim'])->name('promos.claim');
 });

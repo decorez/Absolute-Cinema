@@ -17,7 +17,7 @@
             @if(auth()->user()->role === 'admin')
             <a href="{{ route('admin.bookings') }}" class="transition hover:text-[#D2C1B6] text-sm font-medium">Manage Bookings</a>
             @else
-            <a href="{{ route('bookings.index') }}" class="transition hover:text-[#D2C1B6] text-sm font-medium">My Tickets</a>
+            <a href="{{ route('bookings.index') }}" class="transition hover:text-[#D2C1B6] text-sm font-medium">My Orders</a>
             @endif
             @endauth
 
@@ -126,19 +126,17 @@
                         type="text"
                         placeholder="Search movies..."
                         autocomplete="off"
-                        class="w-full pl-12 pr-4 py-3 bg-[#1B3C53]/40 border border-white/10 rounded-full text-white"
-                    >
+                        class="w-full pl-12 pr-4 py-3 bg-[#1B3C53]/40 border border-white/10 rounded-full text-white">
 
                     <div
                         id="searchResults"
-                        class="absolute top-16 left-0 w-full bg-[#1B3C53] rounded-xl hidden z-50 shadow-lg border border-white/10"
-                    >
+                        class="absolute top-16 left-0 w-full bg-[#1B3C53] rounded-xl hidden z-50 shadow-lg border border-white/10">
                     </div>
 
                 </div>
 
-            </form>  
-        
+            </form>
+
         </div>
 
         <div class="grid grid-cols-3 gap-4 sm:gap-10 max-w-md w-full text-center">
@@ -250,7 +248,7 @@
 
                         @if($promo->image)
                         <img
-                            src="{{ $movie->poster }}" alt="{{ $movie->title }}"
+                            src="{{ $promo->image }}"
                             alt="{{ $promo->title }}"
                             class="w-full h-auto block transition duration-500 group-hover:scale-[1.01]">
                         @else
@@ -263,28 +261,35 @@
                     </div>
                 </div>
                 @empty
-                <div class="swiper-slide !w-full">
-                    <div class="rounded-2xl bg-white/5 border border-dashed border-white/10 text-center text-sm text-[#D2C1B6] flex items-center justify-center w-full" style="min-height: 200px;">
-                        No promotions available
-                    </div>
-                </div>
                 @endforelse
             </div>
         </div>
+
+        @if($promos->isEmpty())
+        <div class="rounded-2xl bg-white/5 border border-dashed border-white/10 p-12 text-center">
+            <p class="text-sm text-[#D2C1B6]">No Promotions Available At The Moment.</p>
+        </div>
+        @endif
     </section>
 
     <section class="max-w-6xl mx-auto pb-24 px-6">
-        <div class="overflow-hidden rounded-[28px] bg-gradient-to-r from-[#355A75] to-[#4E728C] border border-white/10 p-10 sm:p-12">
-            <span class="inline-block rounded-full bg-[#D2C1B6] px-3 py-1 text-xs font-bold text-[#1B3C53]">
-                ABSOLUTE SNACK
-            </span>
-            <h2 class="mt-6 text-3xl sm:text-4xl font-bold leading-tight">
-                Delicious food & drinks ready <br class="hidden sm:block">
-                to accompany your movie night
-            </h2>
-            <a href="{{ route('snacks.all') }}" class="inline-block mt-8 rounded-xl bg-[#D2C1B6] px-6 py-3 text-sm font-bold text-[#1B3C53] transition hover:scale-105">
-                Order Absolute Snack
-            </a>
+        <div class="overflow-hidden rounded-[28px] bg-gradient-to-r from-[#355A75] to-[#4E728C] border border-white/10 p-10 sm:p-12 relative flex items-center justify-between">
+
+            <div class="absolute -top-10 -right-10 w-64 h-64 bg-white/5 rounded-full blur-3xl pointer-events-none"></div>
+            <div class="absolute -bottom-10 -left-10 w-48 h-48 bg-[#D2C1B6]/10 rounded-full blur-2xl pointer-events-none"></div>
+
+            <div class="relative z-10">
+                <span class="inline-block rounded-full bg-[#D2C1B6] px-3 py-1 text-xs font-bold text-[#1B3C53]">
+                    ABSOLUTE SNACK
+                </span>
+                <h2 class="mt-6 text-3xl sm:text-4xl font-bold leading-tight">
+                    Delicious food & drinks ready <br class="hidden sm:block">
+                    to accompany your movie night
+                </h2>
+                <a href="{{ route('snacks.all') }}" class="inline-block mt-8 rounded-xl bg-[#D2C1B6] px-6 py-3 text-sm font-bold text-[#1B3C53] transition hover:scale-105">
+                    Order Absolute Snack
+                </a>
+            </div>
         </div>
     </section>
 
@@ -343,11 +348,11 @@
     const results = document.getElementById('searchResults');
 
 
-    search.addEventListener('keyup', async function(){
+    search.addEventListener('keyup', async function() {
 
         let keyword = this.value;
 
-        if(keyword.length < 2){
+        if (keyword.length < 2) {
 
             results.classList.add('hidden');
 
@@ -364,7 +369,7 @@
 
         results.innerHTML = '';
 
-        if(movies.length === 0){
+        if (movies.length === 0) {
 
             results.innerHTML = `
                 <div class="p-4 text-gray-300">
@@ -449,7 +454,7 @@
         display: block;
     }
 
-    .promo-swiper .swiper-slide > div {
+    .promo-swiper .swiper-slide>div {
         aspect-ratio: 21/9;
         overflow: hidden;
     }

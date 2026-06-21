@@ -130,6 +130,13 @@
                                 {{ $booking->status }}
                             </span>
 
+                            @if($booking->status === 'paid')
+                                <a href="{{ route('bookings.ticket', $booking->id) }}"
+                                class="bg-white/10 text-white border border-white/20 px-4 py-1.5 rounded-lg text-xs font-bold hover:bg-white/20 transition uppercase">
+                                    🎟 Ticket
+                                </a>
+                            @endif
+
                         </div>
 
                     </div>

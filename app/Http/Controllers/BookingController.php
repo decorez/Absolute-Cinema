@@ -214,6 +214,20 @@ class BookingController extends Controller
         ]);
     }
 
+    public function printTicket(Booking $booking)
+    {
+        if ($booking->user_id !== auth()->id()) {
+            return redirect()->route('bookings.index');
+        }
+        
+        if ($booking->status !== 'paid') {
+            return redirect()->route('bookings.index')->with('error', 'Ticket only available for paid bookings.');
+        }
+
+        $booking->load(['schedule.movie', 'bookingDetails.seat', 'snacks']);
+        return view('bookings.ticket', compact('booking'));
+    }
+
     public function processToQr(Request $request, Booking $booking)
     {
         if ($booking->user_id !== auth()->id() || $booking->status !== 'pending') {
