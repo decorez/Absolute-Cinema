@@ -63,7 +63,6 @@
         </div>
 
         <div class="px-8 py-6">
-
             @if($booking->schedule && $booking->schedule->movie)
                 <div class="grid grid-cols-2 gap-4 mb-6">
                     <div>
@@ -91,10 +90,12 @@
                 </div>
             @endif
 
-            @if($booking->snacks && $booking->snacks->count())
-                <div class="mb-6">
+            @php $snacks = $booking->snacks()->get(); @endphp
+
+            @if($snacks->count())
+                <div class="mb-6 border-t border-white/10 pt-4">
                     <p class="text-[10px] text-gray-400 uppercase tracking-widest font-bold mb-2">Snack Order</p>
-                    @foreach($booking->snacks as $snack)
+                    @foreach($snacks as $snack)
                         <div class="flex justify-between items-center py-1.5 border-b border-white/5">
                             <span class="text-white text-sm">{{ $snack->name }}</span>
                             <span class="text-[#D2C1B6] text-sm font-bold mono">x{{ $snack->pivot->quantity }}</span>

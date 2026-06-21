@@ -224,7 +224,7 @@ class BookingController extends Controller
             return redirect()->route('bookings.index')->with('error', 'Ticket only available for paid bookings.');
         }
 
-        $booking->load(['schedule.movie', 'bookingDetails.seat', 'snacks']);
+        $booking = Booking::with(['schedule.movie', 'schedule.studio', 'bookingDetails.seat', 'snacks'])->findOrFail($booking->id);
         return view('bookings.ticket', compact('booking'));
     }
 
